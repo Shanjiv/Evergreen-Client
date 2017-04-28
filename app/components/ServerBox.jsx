@@ -4,9 +4,9 @@ class ServerBox extends Component {
     render() {
         return (
             <div>
-                <div class="row">
+                <div className="row">
                     <label>Select Server
-                        <div class="larger-12 columns">
+                        <div className="larger-12 columns">
                             <select>
                                 <option value="husker">Husker</option>
                                 <option value="starbuck">Starbuck</option>
