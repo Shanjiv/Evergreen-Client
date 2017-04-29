@@ -28,8 +28,8 @@ class AddRemoveServer extends Component {
 
     render() {
         return (
-            <div>
-                <button className="buttonAdd" type="button" data-toggle="example-dropdown" onClick={this.showAddDropdown.bind(this)} >Add Server</button>
+            <div className="AddRemoveServer">
+                <button className="button" type="button" data-toggle="example-dropdown" onClick={this.showAddDropdown.bind(this)} >Add Server</button>
                 { this.state.addFlag == true ?
                 <div className="dropdown-pane-new " id="example-dropdown" data-dropdown data-auto-focus="true">
                     Add server
@@ -53,7 +53,7 @@ class AddRemoveServer extends Component {
                 </div>
                 : null
                 }
-                <button className="buttonRemove" type="button" data-toggle="example-dropdown" onClick={this.showRemoveDropdown.bind(this)}>Remove Server</button>
+                <button className="button" type="button" data-toggle="example-dropdown" onClick={this.showRemoveDropdown.bind(this)}>Remove Server</button>
                 { this.state.removeFlag == true ?
                 <div className="dropdown-pane-new {this.state.removeFlag ? show-dropdown : null}" id="example-dropdown" data-dropdown data-auto-focus="true">
                     Add server
