@@ -12,11 +12,17 @@ class AddRemoveServer extends Component {
 
     showAddDropdown() {
         let {addFlag} = this.state;
+        if (this.state.removeFlag == true) {
+            this.setState({removeFlag: false});    
+        }
         this.setState({addFlag: !addFlag});
     }
 
     showRemoveDropdown() {
         let {removeFlag} = this.state;
+        if (this.state.addFlag == true) {
+            this.setState({addFlag: false});    
+        }
         this.setState({removeFlag: !removeFlag});
     }
 
