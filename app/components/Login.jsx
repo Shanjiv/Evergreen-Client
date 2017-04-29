@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 class Login extends Component {
     render() {
         return (
-            <div>
+            <div className="Login">
                 <div className="row">
                     <div className="large-12 columns">
                         <label>Username

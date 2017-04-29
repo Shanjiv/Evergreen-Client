@@ -29,13 +29,13 @@ class AddRemoveServer extends Component {
                     Add server
                     <div className="row">
                         <div className="medium-6 columns">
-                            <label>Server
+                            <label>Servername
                                 <input type="text" placeholder="Servername"/>
                             </label>
                         </div>
                         <div className="medium-6 columns">
-                            <label>IP
-                                <input type="text" placeholder="IP-adress"/>
+                            <label>Ip-Adress
+                                <input type="text" placeholder="IP"/>
                             </label>
                         </div>
                         <div className="medium-6 columns">
@@ -53,15 +53,10 @@ class AddRemoveServer extends Component {
                     Add server
                     <div className="row">
                         <div className="medium-6 columns">
-                            <label>Server
+                            <label>Servername
                                 <input type="text" placeholder="Servername"/>
                             </label>
                         </div>
-                    </div>
-                    <div className="medium-6 columns">
-                        <label>Port
-                            <input type="text" placeholder="Port"/>
-                        </label>
                     </div>
                 </div>
                 : null
