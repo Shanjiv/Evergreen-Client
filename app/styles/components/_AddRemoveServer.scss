@@ -1,5 +1,5 @@
 .dropdown-pane-new {
-	 background-color: #fefefe;
+	background-color: #fefefe;
     border: 1px solid #cacaca;
     border-radius: 0;
     display: block;
@@ -9,11 +9,23 @@
     visibility: show;
     width: 300px;
     z-index: 10;
-    top: 285px;
+    top: 270px;
 }
 .AddRemoveServer{
-    margin-top: 2rem;
-    align-items: center;
-    display: flex;
-    justify-content: space-around;
+    // margin-top: 2rem;
+    // align-items: center;
+    // display: flex;
+    // justify-content: space-around;
+}
+
+.AddRemoveServer button {
+	margin: 20px 20px;
+}
+
+.AddRemoveServer .remove-dropdown {
+	margin-left: 250px;
+}
+
+.AddRemoveServer .remove-btn {
+	float: right;
 }
