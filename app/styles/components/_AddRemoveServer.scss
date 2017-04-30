@@ -1,31 +1,5 @@
-.dropdown-pane-new {
-	background-color: #fefefe;
-    border: 1px solid #cacaca;
-    border-radius: 0;
-    display: block;
-    font-size: 1rem;
-    padding: 1rem;
-    position: absolute;
-    visibility: show;
-    width: 300px;
-    z-index: 10;
-    top: 270px;
-}
 .AddRemoveServer{
-    // margin-top: 2rem;
-    // align-items: center;
-    // display: flex;
-    // justify-content: space-around;
-}
-
-.AddRemoveServer button {
-	margin: 20px 20px;
-}
-
-.AddRemoveServer .remove-dropdown {
-	margin-left: 250px;
-}
-
-.AddRemoveServer .remove-btn {
-	float: right;
+    align-items: center;
+    display: flex;
+    justify-content: space-around;
 }

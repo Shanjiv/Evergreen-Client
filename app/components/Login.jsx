@@ -6,14 +6,14 @@ class Login extends Component {
             <div className="Login">
                 <div className="row">
                     <div className="large-12 columns">
-                        <label>Username
+                        <label>
                             <input type="text" placeholder="Username"/>
                         </label>
                     </div>
                 </div>
                 <div className="row">
                     <div className="large-12 columns">
-                        <label>Password
+                        <label>
                             <input type="password" placeholder="Password"/>
                         </label>
                     </div>
