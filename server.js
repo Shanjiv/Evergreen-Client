@@ -88,9 +88,15 @@ fs.readFile('serverlist.xml', 'utf-8', function(err, data) {
             return server.serverName[0];
         });
         console.log('Servernames: ', serverNames);
-
+        //Add node in XML file
         serverList.push({"serverName":["Lokal2"],"serverAdress":["http://localhost2"],"port":["18083"]});
         console.log(serverList);
+
+        //Delete node in XML file
+        var serverList2 = serverList.filter(server =>
+          server.serverName[0] != "Lokal"
+        );
+        console.log(JSON.stringify(serverList2));
 
     });
 });
