@@ -22,9 +22,8 @@ const PORT = process.env.PORT || 3000;
 //     parseString(data, function(err, result) {
 //         if (err) console.log(err);
 //
-//         var json = result;
 //         // here we log the results of our xml string conversion
-//         var serverList = json.serverlist.server;
+//         var serverList = result.serverlist.server;
 //         console.log('Serverlist: ', JSON.stringify(serverList) + '\n\n');
 //
 //         // get the serverNames from json and save as array
@@ -40,87 +39,61 @@ const PORT = process.env.PORT || 3000;
 
 
 
-//////////////Editing new JSON object and add server object to json
-
-
-fs.readFile('serverlist0.xml', 'utf-8', function(err, data) {
-    if (err) console.log(err);
-    // we log out the readFile results
-    console.log(data);
-    // we then pass the data to our method here
-    parseString(data, function(err, result) {
-        if (err) console.log(err);
-
-
-
-
-        // here we log the results of our xml string conversion
-        var serverList = result.serverlist.server;
-        console.log('Serverlist: ', JSON.stringify(serverList) + '\n\n');
-
-        // get the serverNames from json and save as array
-        var serverNames = serverList.map((server) => {
-            return server.serverName[0];
-        });
-
-        //CHECK IF SERVERNAME EXISTS and Add server
-        // var items =
-// [ {
-//   id: 1, username: 'fred'
-// },
-// { id: 2, username: 'bill'
-// },
-// { id: 2, username: 'ted'
-// } ];
-// 
-// function checkAndAdd(name) {
-//   var id = items.length + 1;
-//   var found = items.some(function (item) {
-//     return item.username === name;
-//   });
-//   if (!found) { items.push({ id: id, username: name }); }
-// }
-
-        
-        function checkAndAdd(servername) {
-            var id = serverList.length + 1;
-            var found = serverList.some(function (serveritem) {
-                return serveritem.serverName[0] === serverName;
-            });
-           if (!found) { serverList.push({"serverName":[servername],"serverAdress":["http://localhost2"],"port":["18083"]}); 
-                       }
-                            }
-
-        //Remove server
-
-
-         result.serverlist.server = serverList.filter(server =>
-          server.serverName[0] != "Lokal4"
-        );
-
-        // create a new builder object and then convert
-          // our json back to xml.
-          var builder = new xml2js.Builder();
-          var xml = builder.buildObject(result);
-
-          console.log(xml);
-          fs.writeFile('serverlist0.xml', xml, function(err, data){
-              if (err) console.log(err);
-
-              console.log("successfully written our update xml to file");
-          })
-
-
-
-      });
-});
-
-
-
-
-
-
+// //////////////Editing new JSON object and add server object to json
 //
+//
+// fs.readFile('serverlist0.xml', 'utf-8', function(err, data) {
+//     if (err) console.log(err);
+//     // we log out the readFile results
+//     console.log(data);
+//     // we then pass the data to our method here
+//     parseString(data, function(err, result) {
+//         if (err) console.log(err);
+//
+//
+//
+//
+//         // here we log the results of our xml string conversion
+//         var serverList = result.serverlist.server;
+//         console.log('Serverlist: ', JSON.stringify(serverList) + '\n\n');
+//
+//         ////////// get the serverNames from json and save as array
+//         var serverNames = serverList.map((server) => {
+//             return server.serverName[0];
+//         });
+//
+//         ///////////CHECK IF SERVERNAME EXISTS and Add server
+//
+//         function checkAndAdd(servername) {
+//             //var id = serverList.length + 1;
+//             var found = serverList.some(function (serveritem) {
+//                 return serveritem.serverName[0] === servername;
+//             });
+//            if (!found) { serverList.push({"serverName":[servername],"serverAdress":["http://localhost2"],"port":["18083"]});
+//                        }
+//                             }
+//         checkAndAdd('Lokal4');
+//
+//         // create a new builder object and then convert
+//           // our json back to xml.
+//           var builder = new xml2js.Builder();
+//           var xml = builder.buildObject(result);
+//
+//           console.log(xml);
+//           fs.writeFile('serverlist0.xml', xml, function(err, data){
+//               if (err) console.log(err);
+//
+//               console.log("successfully written our update xml to file");
+//           })
+//       });
+// });
+
+
+
+
+
+
+
 // ///////////////Remove Server from Serverlist
 //
 // fs.readFile('serverlist0.xml', 'utf-8', function(err, data) {
@@ -134,36 +107,35 @@ fs.readFile('serverlist0.xml', 'utf-8', function(err, data) {
 //
 //         // here we log the results of our xml string conversion
 //         var serverList = result.serverlist.server;
-//         console.log('Serverlist: ', JSON.stringify(serverList) + '\n\n');
+//
 //
 //         // get the serverNames from json and save as array
 //         var serverNames = serverList.map((server) => {
 //             return server.serverName[0];
 //         });
-//         console.log('Servernames: ', serverNames);
-//         //Add node in XML file
-//         serverList.push({"serverName":["Lokal2"],"serverAdress":["http://localhost2"],"port":["18083"]});
-//         console.log(serverList);
 //
-//         //Delete node in XML file
-        // var serverList2 = serverList.filter(server =>
-        //   server.serverName[0] != "Lokal2"
-        // );
-//         console.log('Serverlist2', serverList2);
+//         ///// delete server from array
+//         result.serverlist.server = serverList.filter(server =>
+//          server.serverName[0] != "Lokal4"
+//        );
 //
-//         var builder = new xml2js.Builder();
-//         var xml = builder.buildObject(result);
+//        // create a new builder object and then convert
+//          // our json back to xml.
+//          var builder = new xml2js.Builder();
+//          var xml = builder.buildObject(result);
 //
-//         console.log(xml);
-//         fs.writeFile('serverlist0.xml', xml, function(err, data){
-//             if (err) console.log(err);
+//          console.log(xml);
+//          fs.writeFile('serverlist0.xml', xml, function(err, data){
+//              if (err) console.log(err);
 //
-//             console.log("successfully written our update xml to file");
-//         })
+//              console.log("successfully written our update xml to file");
+//          })
+//
+//
 //
 //     });
 // });
-//
+
 
 
 
