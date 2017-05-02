@@ -64,11 +64,32 @@ fs.readFile('serverlist0.xml', 'utf-8', function(err, data) {
         });
 
         //CHECK IF SERVERNAME EXISTS and Add server
+        // var items =
+// [ {
+//   id: 1, username: 'fred'
+// },
+// { id: 2, username: 'bill'
+// },
+// { id: 2, username: 'ted'
+// } ];
+// 
+// function checkAndAdd(name) {
+//   var id = items.length + 1;
+//   var found = items.some(function (item) {
+//     return item.username === name;
+//   });
+//   if (!found) { items.push({ id: id, username: name }); }
+// }
 
-
-        serverList.push({"serverName":["Lokal4"],"serverAdress":["http://localhost2"],"port":["18083"]});
-
-
+        
+        function checkAndAdd(servername) {
+            var id = serverList.length + 1;
+            var found = serverList.some(function (serveritem) {
+                return serveritem.serverName[0] === serverName;
+            });
+           if (!found) { serverList.push({"serverName":[servername],"serverAdress":["http://localhost2"],"port":["18083"]}); 
+                       }
+                            }
 
         //Remove server
 
