@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 
 class ServerBox extends Component {
+
     render() {
         return (
             <div>

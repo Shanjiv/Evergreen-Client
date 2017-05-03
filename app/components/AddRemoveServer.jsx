@@ -6,7 +6,8 @@ class AddRemoveServer extends Component {
         super(props);
         this.state = {
             addFlag: false,
-            removeFlag: false
+            removeFlag: false,
+            server: []
         };
     }
 
@@ -61,7 +62,7 @@ class AddRemoveServer extends Component {
                                     </label>
                                 </div>
                             </div>
-                            <button className="button expanded">Add Server</button>
+                            <button className="button expanded" onClick={this.AddServer}>Add Server</button>
                         </div>
                     : null
 }
