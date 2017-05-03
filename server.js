@@ -95,10 +95,16 @@ app.use('/addserver', function(req, res) {
           return serveritem.serverName[0] === servername;
         });
         if (!found) {
-          serverList.push({"serverName": [servername], "serverAdress": [serveradress], "port": [port]});
+          return serverList.push({"serverName": [servername], "serverAdress": [serveradress], "port": [port]});
+        } else {
+          return false;
         }
       }
-      checkAndAdd(servername, serveradress, port);
+      var checker = checkAndAdd(servername, serveradress, port);
+
+      if (!checker)
+        return res.status(400).send('Server already exists please type other name');
+
       // create a new builder object and then convert
       // our json back to xml.
       var builder = new xml2js.Builder();
@@ -153,7 +159,7 @@ app.use('/removeserver', function(req, res) {
       fs.writeFile('serverlist0.xml', xml, function(err, data) {
         if (err)
           console.log(err);
-          
+
         res.send('success!')
         console.log("successfully written our update xml to file");
       })

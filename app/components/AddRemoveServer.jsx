@@ -62,6 +62,7 @@ class AddRemoveServer extends Component {
           this.props.refreshServers();
         })
         .catch((e) => {
+          this.setState({errorFlag: e.response.data})
           console.error('error occured', e);
         })
     }
@@ -112,7 +113,7 @@ class AddRemoveServer extends Component {
               <div className="row">
                 <div className="large-12 columns">
                   <label>
-                    <input name="addServerIp" type="number" placeholder="IP" onChange={this.handleInputChange}/>
+                    <input name="addServerIp" type="text" placeholder="IP" onChange={this.handleInputChange}/>
                   </label>
                 </div>
               </div>
