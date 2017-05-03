@@ -33,7 +33,11 @@ app.get('/readserverlist', (req, res) => {
 
       // get the serverNames from json and save as array
       var serverNames = serverList.map((server) => {
-        return server.serverName[0];
+        return {
+          serverName: server.serverName[0],
+          serverAdress: server.serverAdress[0],
+          port: server.port[0]
+        };
       });
 
       console.log('Servernames: ', serverNames);

@@ -8,6 +8,7 @@ class AddRemoveServer extends Component {
     this.state = {
       addFlag: false,
       removeFlag: false,
+      showFlag: false,
       addServerName: '',
       addServerIp: '',
       addServerPort: '',
@@ -27,6 +28,11 @@ class AddRemoveServer extends Component {
     if (this.state.removeFlag == true) {
       this.setState({removeFlag: false});
     }
+
+    if (this.state.showFlag === true) {
+      this.setState({showFlag: false})
+    }
+
     this.setState({
       addFlag: !addFlag
     });
@@ -37,8 +43,31 @@ class AddRemoveServer extends Component {
     if (this.state.addFlag == true) {
       this.setState({addFlag: false});
     }
+
+    if (this.state.showFlag === true) {
+      this.setState({showFlag: false})
+    }
+
     this.setState({
       removeFlag: !removeFlag
+    });
+  }
+
+  handleShowServer() {
+
+    console.log('this', this.props);
+
+    let {showFlag} = this.state;
+    if (this.state.addFlag == true) {
+      this.setState({addFlag: false});
+    }
+
+    if (this.state.removeFlag === true) {
+      this.setState({removeFlag: false})
+    }
+
+    this.setState({
+      showFlag: !showFlag
     });
   }
 
@@ -97,6 +126,7 @@ class AddRemoveServer extends Component {
     return (
       <div>
         <div className="AddRemoveServer">
+          <button className="dropdown button" type="button" onClick={this.handleShowServer.bind(this)}>Show Server Info</button>
           <button className="dropdown button" type="button" onClick={this.handleAddServer.bind(this)}>Add Server</button>
           <button className="dropdown button" type="button" onClick={this.handleDeleteServer.bind(this)}>Remove Server</button>
         </div>
@@ -133,6 +163,32 @@ class AddRemoveServer extends Component {
           : null
         }
 
+        {this.state.showFlag &&
+          <div className="ShowServer">
+            <div className="row">
+              <div className="large-12 columns">
+                <label>Server Name
+                  <input type="text" value={this.props.selectedServer.serverName} disabled/>
+                </label>
+              </div>
+            </div>
+            <div className="row">
+              <div className="large-12 columns">
+                <label>Server Address
+                  <input type="text" value={this.props.selectedServer.serverAdress} disabled/>
+                </label>
+              </div>
+            </div>
+            <div className="row">
+              <div className="large-12 columns">
+                <label>Server Port
+                  <input type="number" value={this.props.selectedServer.port} disabled/>
+                </label>
+              </div>
+            </div>
+          </div>
+        }
+
         {this.state.removeFlag == true
           ? <div className="RemoveServer">
               <div className="row">
@@ -142,7 +198,7 @@ class AddRemoveServer extends Component {
                       {
                         this.props.servers.map((entry, key) => {
                           return (
-                            <option key={key} value={entry}>{entry}</option>
+                            <option key={key} value={entry.serverName}>{entry.serverName}</option>
                           )
                         })
                       }
