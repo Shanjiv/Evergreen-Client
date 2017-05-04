@@ -72,12 +72,22 @@ class AddRemoveServer extends Component {
   }
 
   addServer = () => {
+
+    let regex = "^((https|http|ftp|rtsp|mms)?://)"
+        + "?(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
+
+    let pattern = new RegExp(regex);
+
     if (!this.state.addServerName) {
       return this.setState({errorFlag: 'Please input server name'})
     } else if (!this.state.addServerIp) {
       return this.setState({errorFlag: 'Please input server ip'})
     } else if (!this.state.addServerPort) {
       return this.setState({errorFlag: 'Please input server port'})
+    } else if (!pattern.test(this.state.addServerIp)) {
+      return this.setState({errorFlag: 'Please enter valid server address'})
+    } else if (true) {
+      return this.setState({errorFlag: 'this is true'})
     } else {
       axios.post('/addserver', {servername: this.state.addServerName, serverip: this.state.addServerIp, serverport: this.state.addServerPort})
         .then((result) => {
