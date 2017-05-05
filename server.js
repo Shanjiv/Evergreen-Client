@@ -192,7 +192,7 @@ app.use('/login', function (req, res) {
           return res.status(500).send('couldn\'t parse');
 
           result['wsdl:definitions']['wsdl:service'][0]['wsdl:port'][0]['soap:address'][0]['$'].location =
-          req.body.serveradress + '/' + req.body.port + '/malso/services/EvergreenWebService/';
+          req.body.serveradress + ':' + req.body.port + '/malso/services/EvergreenWebService/';
 
           var builder = new xml2js.Builder();
           var xml = builder.buildObject(result);

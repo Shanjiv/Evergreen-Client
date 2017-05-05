@@ -34,12 +34,14 @@ class Login extends Component {
       axios.post('/login', {servername: this.props.selectedServer.serverName, serveradress: this.props.selectedServer.serverAdress, port: this.props.selectedServer.port})
         .then((result) => {
           $.soap({
-          	url: `${this.props.selectedServer.serverName}:${this.props.selectedServer.port}`,
-          	method: 'loginInformation',
+          	url: `${this.props.selectedServer.serverAdress}:${this.props.selectedServer.port}/malso/services/EvergreenWebService/`,
+          	method: 'Connection',
           	data: {
-          		userName: this.state.username,
-          		userPassword: this.state.password
-          	},
+                    loginInformation: {
+                      UserName: this.state.username,
+                      UserPassword: this.state.password,
+                    }
+                  },
           	success: function (soapResponse) {
               this.setState({
                 username: '',
