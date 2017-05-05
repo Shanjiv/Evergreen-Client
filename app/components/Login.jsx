@@ -42,7 +42,7 @@ class Login extends Component {
                       UserPassword: this.state.password,
                     }
                   },
-          	success: function (soapResponse) {
+          	success: (soapResponse) => {
               this.setState({
                 username: '',
                 password: '',
@@ -50,7 +50,7 @@ class Login extends Component {
               })
               this.props.router.push('/home')
           	},
-          	error: function (SOAPResponse) {
+          	error: (SOAPResponse) => {
           		this.setState({errorFlag: 'something wrong'})
           	}
           });
