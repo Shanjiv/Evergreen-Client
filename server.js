@@ -236,9 +236,6 @@ app.use('/login', function (req, res) {
               res.send(response.result);
             })
           })
-
-          console.log("successfully written our update xml to file");
-          res.send('success');
         })
     });
   });
