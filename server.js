@@ -185,29 +185,62 @@ app.use('/login', function (req, res) {
     return res.status(400).send('port missing!')
   }
 
-    fs.readFile('EvergreenWebService.wsdl', 'utf-8', function(err, data) {
-      console.log('Err', err);
+  if (!req.body.username) {
+    return res.status(400).send('username missing!')
+  }
 
-      if (err) return res.status(500).send('couldn\'t read file');
+  if (!req.body.password) {
+    return res.status(400).send('password missing!')
+  }
 
-      parseString(data, function(err, result) {
-        if (err)
-          return res.status(500).send('couldn\'t parse');
+  fs.readFile('EvergreenWebService.wsdl', 'utf-8', function(err, data) {
+    console.log('Err', err);
 
-          result['wsdl:definitions']['wsdl:service'][0]['wsdl:port'][0]['soap:address'][0]['$'].location =
-          req.body.serveradress + ':' + req.body.port + '/malso/services/EvergreenWebService/';
+    if (err) return res.status(500).send('couldn\'t read file');
 
-          var builder = new xml2js.Builder();
-          var xml = builder.buildObject(result);
+    parseString(data, function(err, result) {
+      if (err)
+        return res.status(500).send('couldn\'t parse');
 
-          fs.writeFile('EvergreenWebService.wsdl', xml, function(err, data) {
+        result['wsdl:definitions']['wsdl:service'][0]['wsdl:port'][0]['soap:address'][0]['$'].location =
+        req.body.serveradress + ':' + req.body.port + '/malso/services/EvergreenWebService/';
+
+        var builder = new xml2js.Builder();
+        var xml = builder.buildObject(result);
+
+        fs.writeFile('EvergreenWebService.wsdl', xml, function(err, data) {
+          if (err)
+            return res.status(500).send('couldn\'t write file!')
+
+          var args = {
+            loginInformation: {
+              UserName: req.body.username,
+              UserPassword: req.body.password
+            }
+          }
+
+          soap.createClient('./EvergreenWebService.wsdl', function (err, client) {
             if (err)
-              return res.status(500).send('couldn\'t write file!')
+              return res.status(500).send('couldn\'t create soap client');
 
-            console.log("successfully written our update xml to file");
-            res.send('success');
+            client.Connection(args, function(err, response) {
+              if (err)
+                return res.status(500).send('error occured');
+
+              if (response.errors && response.errors.Errors)
+                return res.status(400).send(response.errors.Errors.ErrorMessage);
+
+              if (!response.result)
+                return res.status(500).send('something wrong');
+
+              res.send(response.result);
+            })
           })
-      });
+
+          console.log("successfully written our update xml to file");
+          res.send('success');
+        })
+    });
   });
 })
 
