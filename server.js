@@ -3,6 +3,9 @@ var bodyParser = require('body-parser');
 var fs = require('fs');
 var xml2js = require('xml2js');
 parseString = require('xml2js').parseString;
+var soap = require('soap');
+
+
 
 // Create our app
 var app = express();
@@ -208,31 +211,29 @@ app.use('/login', function (req, res) {
   });
 })
 
-// ////////Add selected serveradress and port to element <soap:adress /> in wsdl file
-//       //serveradress, should be replaced with selected Servername and Port.
-//       //In this example i used http://Servertest as Serveradress and Portnumber 8080
-//
-//   fs.readFile('EvergreenWebservice.wsdl', 'utf-8', function(err, data) {
-//     if (err) console.log(err);
-//
-//     parseString(data, function(err, result) {
-//       if (err)
-//         console.log(err);
-//
-//         result['wsdl:definitions']['wsdl:service'][0]['wsdl:port'][0]['soap:address'][0]['$'].location =
-//         'http://Servertest'+ '/8080' + '/malso/services/EvergreenWebService/';
-//
-//         var builder = new xml2js.Builder();
-//         var xml = builder.buildObject(result);
-//
-//         fs.writeFile('EvergreenWebservice.wsdl', xml, function(err, data) {
-//           if (err)
-//             console.log(err);
-//
-//           console.log("successfully written our update xml to file");
-//         })
+
+
+///////TESTING SOAP-WEBSERVICE WITH NODE-SOAP MODULE WAS SUCCESSFUL
+// var url = './EvergreenWebService.wsdl';
+// var args = {
+//     loginInformation: {
+//         UserName: 'admin',
+//         UserPassword: 'admin'
+//     }
+// };
+// soap.createClient(url, function(err, client) {
+//     client.Connection(args, function(err, result) {
+//         console.log(result);
 //     });
 // });
+//THE SOAP-RESPONSE for result is :
+// { result:
+//    { Session: 'rQF69AzBlax3CF3EDNhm3soLBPh71Y',
+//      SessionType: 'EDITOR' },
+//   errors: null }
+
+
+
 
 
 //common pattern for express middleware => let us do something with every request
