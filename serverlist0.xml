@@ -20,4 +20,14 @@
     <serverAdress>http://123.2123.213</serverAdress>
     <port>8080</port>
   </server>
+  <server>
+    <serverName>NewServer</serverName>
+    <serverAdress>http://192.168.178.49</serverAdress>
+    <port>18083</port>
+  </server>
+  <server>
+    <serverName>Newest Server</serverName>
+    <serverAdress>http://192.168.178.49</serverAdress>
+    <port>18083</port>
+  </server>
 </serverlist>

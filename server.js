@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 const PORT = process.env.PORT || 3000;
 
 var fs = require('fs'),
-  parseString = require('xml2js').parseString;
+    parseString = require('xml2js').parseString;
 
 //////////////// Read Serverlist.XML file and Sername
 app.get('/readserverlist', (req, res) => {
@@ -241,9 +241,7 @@ app.use('/login', function (req, res) {
   });
 })
 
-
-
-///////TESTING SOAP-WEBSERVICE WITH NODE-SOAP MODULE WAS SUCCESSFUL
+/////Login with username and password
 // var url = './EvergreenWebService.wsdl';
 // var args = {
 //     loginInformation: {
@@ -253,14 +251,70 @@ app.use('/login', function (req, res) {
 // };
 // soap.createClient(url, function(err, client) {
 //     client.Connection(args, function(err, result) {
-//         console.log(result);
+//         console.log(JSON.stringify(result));
 //     });
 // });
-//THE SOAP-RESPONSE for result is :
-// { result:
-//    { Session: 'rQF69AzBlax3CF3EDNhm3soLBPh71Y',
-//      SessionType: 'EDITOR' },
-//   errors: null }
+
+
+// ///Get All Groups and Sites
+// var url = './EvergreenWebService.wsdl';
+// var args = {
+//     auth: {
+//         AuthSession: 'exuieaoEiIgxIX4a2dREbbSqWy6yhK'
+//     }
+// };
+// soap.createClient(url, function(err, client) {
+//     client.GetUserPageConfig(args, function(err, result) {
+//         //console.log(JSON.stringify(result));
+//         var Title = result.Config.Groups[0].Title;
+//         console.log(Title);
+//
+//     });
+// });
+
+
+
+///Modify (Add+Remove) Groups and Sites
+// var url = './EvergreenWebService.wsdl';
+// var args = {
+//     auth: {
+//         AuthSession: 'exuieaoEiIgxIX4a2dREbbSqWy6yhK'
+//     },
+//
+//         NewConfig: {
+//             OwnerId: 'admin',
+//             Groups: [{
+//                     Title: 'A',
+//                     Index: 1,
+//                     Pages: ['317', '321', '322', '327'],
+//                 },
+//                 {
+//                     Title: 'B',
+//                     Index: 2,
+//                     Pages: ['323', '324', '329'],
+//                 },
+//                 {
+//                     Title: 'D',
+//                     Index: 3,
+//                     Pages: ['325'],
+//                 },
+//                 {
+//                     Title: 'E',
+//                     Index: 4,
+//                     Pages: [],
+//                 },
+//             ],
+//         },
+// };
+//
+// soap.createClient(url, function(err, client) {
+//     client.ModifyUserPageConfig(args, function(err, result) {
+//         console.log(JSON.stringify(result));
+//     });
+// });
+
+
+
 
 
 
@@ -271,15 +325,15 @@ app.use('/login', function (req, res) {
 //res => what cant sent back
 //next => move on e.g call when middles is done
 app.use(function(req, res, next) {
-  if (req.headers['x-forwarded-proto'] === 'https') {
-    res.redirect('http://' + req.hostname + req.url);
-  } else {
-    next();
-  }
+    if (req.headers['x-forwarded-proto'] === 'https') {
+        res.redirect('http://' + req.hostname + req.url);
+    } else {
+        next();
+    }
 });
 
 app.use(express.static('public'));
 
 app.listen(PORT, function() {
-  console.log('Express server is up on port ' + PORT);
+    console.log('Express server is up on port ' + PORT);
 });
