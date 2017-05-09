@@ -8,47 +8,66 @@ class Home extends Component {
             <div>
                 <div className="top-bar">
                     <div className="top-bar-left">
-                        admin
+                        <ul className="menu">
+                            <li className="menu-text">Username</li>
+                            <li>
+                                <a href="#">Logout</a>
+                            </li>
+                        </ul>
                     </div>
                     <div className="top-bar-right">
-                        <a href="#">Logout</a>
+                        <form onSubmit={this.OnAddGroup}>
+                            <ul className="menu">
+                                <li>
+                                    <input type="search" placeholder="type new groupname" ref="search"/>
+                                </li>
+                                <li>
+                                    <input type="submit" className="button" value="Add Group"/>
+                                </li>
+                            </ul>
+                        </form>
                     </div>
                 </div>
                 <ul className="flex-container">
                     <li className="flex-item">
                         <ul className="list-group">
-                            <li className="list-group-item active">List Group Item 1 (Active)</li>
-                            <li className="list-group-item">List Group Item 2</li>
-                            <li className="list-group-item">List Group Item 3</li>
+                            <li className="list-group-item active">Groupname</li>
+                            <li className="list-group-item">Page 1</li>
+                            <li className="list-group-item">Page 2</li>
+                              <button className="dropdown button" type="button">Add new site</button>
                         </ul>
                     </li>
                     <li className="flex-item">
-                        <ul className="list-group">
-                            <li className="list-group-item active">List Group Item 1 (Active)</li>
-                            <li className="list-group-item">List Group Item 2</li>
-                            <li className="list-group-item">List Group Item 3</li>
-                        </ul>
+                      <ul className="list-group">
+                          <li className="list-group-item active">Groupname</li>
+                          <li className="list-group-item">Page 1</li>
+                          <li className="list-group-item">Page 2</li>
+                            <button className="dropdown button" type="button">Add new site</button>
+                      </ul>
                     </li>
                     <li className="flex-item">
-                        <ul className="list-group">
-                            <li className="list-group-item active">List Group Item 1 (Active)</li>
-                            <li className="list-group-item">List Group Item 2</li>
-                            <li className="list-group-item">List Group Item 3</li>
-                        </ul>
+                      <ul className="list-group">
+                          <li className="list-group-item active">Groupname</li>
+                          <li className="list-group-item">Page 1</li>
+                          <li className="list-group-item">Page 2</li>
+                            <button className="dropdown button" type="button">Add new site</button>
+                      </ul>
                     </li>
                     <li className="flex-item">
-                        <ul className="list-group">
-                            <li className="list-group-item active">List Group Item 1 (Active)</li>
-                            <li className="list-group-item">List Group Item 2</li>
-                            <li className="list-group-item">List Group Item 3</li>
-                        </ul>
+                      <ul className="list-group">
+                          <li className="list-group-item active">Groupname</li>
+                          <li className="list-group-item">Page 1</li>
+                          <li className="list-group-item">Page 2</li>
+                            <button className="dropdown button" type="button">Add new site</button>
+                      </ul>
                     </li>
                     <li className="flex-item">
-                        <ul className="list-group">
-                            <li className="list-group-item active">List Group Item 1 (Active)</li>
-                            <li className="list-group-item">List Group Item 2</li>
-                            <li className="list-group-item">List Group Item 3</li>
-                        </ul>
+                      <ul className="list-group">
+                          <li className="list-group-item active">Groupname</li>
+                          <li className="list-group-item">Page 1</li>
+                          <li className="list-group-item">Page 2</li>
+                            <button className="dropdown button" type="button">Add new site</button>
+                      </ul>
                     </li>
                 </ul>
             </div>
