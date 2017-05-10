@@ -61,11 +61,11 @@ class Home extends Component {
                     )
                   })}
 
-                  {/* { entry.Pages && Object.prototype.toString.call( entry.Pages ) === '[object Object]' &&
-                    <li key={pageIndex} className="list-group-item">
+                  { entry.Pages && Object.prototype.toString.call( entry.Pages ) === '[object Object]' &&
+                    <li className="list-group-item">
                       <div className="handleGroupname">
                         <div>
-                          Rename
+                          Renamea
                         </div>
                         <div>
                           Delete
@@ -73,7 +73,7 @@ class Home extends Component {
                       </div>
                       {entry.Pages.Title}
                     </li>
-                  } */}
+                  }
 
                   <button className="dropdown button" type="button">Add new site</button>
                 </ul>
