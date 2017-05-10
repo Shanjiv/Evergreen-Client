@@ -18,46 +18,46 @@ var fs = require('fs'),
     parseString = require('xml2js').parseString;
 
 // //////////////// Read Serverlist.XML file and Sername
-// app.get('/readserverlist', (req, res) => {
-//   fs.readFile('serverlist0.xml', 'utf-8', function(err, data) {
-//     if (err)
-//       console.log(err);
-//
-//     // we log out the readFile results
-//     console.log(data);
-//     // we then pass the data to our method here
-//     parseString(data, function(err, result) {
-//       if (err)
-//         console.log(err);
-//
-//       // here we log the results of our xml string conversion
-//       var serverList = result.serverlist.server;
-//       console.log('Serverlist: ', JSON.stringify(serverList) + '\n\n');
-//
-//       // get the serverNames from json and save as array
-//       var serverNames = serverList.map((server) => {
-//         return {
-//           serverName: server.serverName[0],
-//           serverAdress: server.serverAdress[0],
-//           port: server.port[0]
-//         };
-//       });
-//
-//       console.log('Servernames: ', serverNames);
-//
-//       var object = {
-//         "serverlist": serverNames,
-//         "errormessage": "ERROR"
-//       };
-//
-//       jsondata = JSON.stringify(object);
-//       console.log(jsondata);
-//       console.log(jsondata.serverlist);
-//       res.send(jsondata);
-//     });
-//   });
-// })
-//
+app.get('/readserverlist', (req, res) => {
+  fs.readFile('serverlist0.xml', 'utf-8', function(err, data) {
+    if (err)
+      console.log(err);
+
+    // we log out the readFile results
+    console.log(data);
+    // we then pass the data to our method here
+    parseString(data, function(err, result) {
+      if (err)
+        console.log(err);
+
+      // here we log the results of our xml string conversion
+      var serverList = result.serverlist.server;
+      console.log('Serverlist: ', JSON.stringify(serverList) + '\n\n');
+
+      // get the serverNames from json and save as array
+      var serverNames = serverList.map((server) => {
+        return {
+          serverName: server.serverName[0],
+          serverAdress: server.serverAdress[0],
+          port: server.port[0]
+        };
+      });
+
+      console.log('Servernames: ', serverNames);
+
+      var object = {
+        "serverlist": serverNames,
+        "errormessage": "ERROR"
+      };
+
+      jsondata = JSON.stringify(object);
+      console.log(jsondata);
+      console.log(jsondata.serverlist);
+      res.send(jsondata);
+    });
+  });
+})
+
 // app.use('/addserver', function(req, res) {
 //
 //   if (!req.body.servername) {
@@ -174,74 +174,105 @@ var fs = require('fs'),
 //     });
 //   });
 // })
-//
-//
-// app.use('/login', function (req, res) {
-//   if (!req.body.serveradress) {
-//     return res.status(400).send('serveradress missing!')
-//   }
-//
-//   if (!req.body.port) {
-//     return res.status(400).send('port missing!')
-//   }
-//
-//   if (!req.body.username) {
-//     return res.status(400).send('username missing!')
-//   }
-//
-//   if (!req.body.password) {
-//     return res.status(400).send('password missing!')
-//   }
-//
-//   fs.readFile('EvergreenWebService.wsdl', 'utf-8', function(err, data) {
-//     console.log('Err', err);
-//
-//     if (err) return res.status(500).send('couldn\'t read file');
-//
-//     parseString(data, function(err, result) {
-//       if (err)
-//         return res.status(500).send('couldn\'t parse');
-//
-//         result['wsdl:definitions']['wsdl:service'][0]['wsdl:port'][0]['soap:address'][0]['$'].location =
-//         req.body.serveradress + ':' + req.body.port + '/malso/services/EvergreenWebService/';
-//
-//         var builder = new xml2js.Builder();
-//         var xml = builder.buildObject(result);
-//
-//         fs.writeFile('EvergreenWebService.wsdl', xml, function(err, data) {
-//           if (err)
-//             return res.status(500).send('couldn\'t write file!')
-//
-//           var args = {
-//             loginInformation: {
-//               UserName: req.body.username,
-//               UserPassword: req.body.password
-//             }
-//           }
-//
-//           soap.createClient('./EvergreenWebService.wsdl', function (err, client) {
-//             if (err)
-//               return res.status(500).send('couldn\'t create soap client');
-//
-//             client.Connection(args, function(err, response) {
-//               if (err)
-//                 return res.status(500).send('error occured');
-//
-//               if (response.errors && response.errors.Errors)
-//                 return res.status(400).send(response.errors.Errors.ErrorMessage);
-//
-//               if (!response.result)
-//                 return res.status(500).send('something wrong');
-//
-//               res.send(response.result);
-//             })
-//           })
-//         })
-//     });
-//   });
-// })
 
 
+app.use('/login', function (req, res) {
+  if (!req.body.serveradress) {
+    return res.status(400).send('serveradress missing!')
+  }
+
+  if (!req.body.port) {
+    return res.status(400).send('port missing!')
+  }
+
+  if (!req.body.username) {
+    return res.status(400).send('username missing!')
+  }
+
+  if (!req.body.password) {
+    return res.status(400).send('password missing!')
+  }
+
+  fs.readFile('EvergreenWebService.wsdl', 'utf-8', function(err, data) {
+    console.log('Err', err);
+
+    if (err) return res.status(500).send('couldn\'t read file');
+
+    parseString(data, function(err, result) {
+      if (err)
+        return res.status(500).send('couldn\'t parse');
+
+        result['wsdl:definitions']['wsdl:service'][0]['wsdl:port'][0]['soap:address'][0]['$'].location =
+        req.body.serveradress + ':' + req.body.port + '/malso/services/EvergreenWebService/';
+
+        var builder = new xml2js.Builder();
+        var xml = builder.buildObject(result);
+
+        fs.writeFile('EvergreenWebService.wsdl', xml, function(err, data) {
+          if (err)
+            return res.status(500).send('couldn\'t write file!')
+
+          var args = {
+            loginInformation: {
+              UserName: req.body.username,
+              UserPassword: req.body.password
+            }
+          }
+
+          fs.readFile('LoginResult.json', function (err, loginresult) {
+            if (err) return res.status(500).send('couldn\'t read file');
+
+            res.send(JSON.parse(loginresult).result);
+          })
+
+          // soap.createClient('./EvergreenWebService.wsdl', function (err, client) {
+          //   if (err)
+          //     return res.status(500).send('couldn\'t create soap client');
+          //
+          //   client.Connection(args, function(err, response) {
+          //     if (err)
+          //       return res.status(500).send('error occured');
+          //
+          //     if (response.errors && response.errors.Errors)
+          //       return res.status(400).send(response.errors.Errors.ErrorMessage);
+          //
+          //     if (!response.result)
+          //       return res.status(500).send('something wrong');
+          //
+          //     res.send(response.result);
+          //   })
+          // })
+        })
+    });
+  });
+})
+
+// to check if user is logged or not, probably need to ask from webserver now its just comparing session with the LoginResult.json
+
+app.use('/logged', function (req, res) {
+  if (!req.body.session) {
+    return res.status(400).send('session missing!')
+  }
+  fs.readFile('LoginResult.json', function (err, loginresult) {
+    if (err) return res.status(500).send('couldn\'t read file');
+
+    var jsonData = JSON.parse(loginresult)
+
+    if (req.body.session !== jsonData.result.Session)
+      return res.status(400).send('auth error!');
+
+    res.send('success');
+  })
+})
+
+// here need to remove session from database for now its just removing it from frontend sessionStorage
+
+app.use('/logout', function (req, res) {
+  if (!req.body.session) {
+    return res.status(400).send('session missing!')
+  }
+  res.send('success');
+})
 
 
 // ///Login response from webservice is saved in Loginresult.json.
@@ -257,6 +288,23 @@ var fs = require('fs'),
 //         console.log(result);
 //     });
 // });
+
+
+// for now its reading from file
+app.use('/getUserPageConfig', function (req, res) {
+  if (!req.body.session) {
+    return res.status(400).send('session missing!');
+  }
+
+  fs.readFile('GetUserPageConfig.json', function (err, result) {
+    if (err)
+      return res.status(400).send('couldm\'t read file!')
+
+    var jsonData = JSON.parse(result);
+
+    res.send(jsonData.Config);
+  })
+})
 
 
 

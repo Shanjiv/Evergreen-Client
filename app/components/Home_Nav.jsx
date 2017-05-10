@@ -1,8 +1,25 @@
 import React, {Component} from 'react';
+import axios from 'axios';
+import { browserHistory } from 'react-router';
 
 class Home_Nav extends Component {
 
     componentDidMount() {}
+
+    logoutHandler = () => {
+      console.log('what??')
+
+      axios.post('/logout', {session: window.sessionStorage.getItem("session")})
+        .then((result) => {
+          window.sessionStorage.setItem("session", "");
+          window.sessionStorage.setItem("sessionType", "");
+          this.props.router.push('/')
+        })
+        .catch((e) => {
+
+        })
+    }
+
     render() {
         return (
             <div>
@@ -11,7 +28,7 @@ class Home_Nav extends Component {
                         <ul className="menu">
                             <li className="menu-text">Username</li>
                             <li>
-                                <a href="#">Logout</a>
+                                <a onClick={this.logoutHandler}>Logout</a>
                             </li>
                         </ul>
                     </div>
