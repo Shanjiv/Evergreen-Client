@@ -13,16 +13,16 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    axios.post('/logged', {session: window.sessionStorage.getItem("session")}).then((result) => {
-      axios.post('/getUserPageConfig', {session: window.sessionStorage.getItem("session")}).then((userPageConfig) => {
-        console.log('aa', userPageConfig.data);
-        this.setState({groups: userPageConfig.data.Groups})
-      }).catch((err) => {})
-    }).catch((e) => {
-      // console.log('e', e.response);
-
-      this.context.router.push('/')
-    })
+    // axios.post('/logged', {session: window.sessionStorage.getItem("session")}).then((result) => {
+    //   axios.post('/getUserPageConfig', {session: window.sessionStorage.getItem("session")}).then((userPageConfig) => {
+    //     console.log('aa', userPageConfig.data);
+    //     this.setState({groups: userPageConfig.data.Groups})
+    //   }).catch((err) => {})
+    // }).catch((e) => {
+    //   // console.log('e', e.response);
+    //
+    //   this.context.router.push('/')
+    // })
   }
 
   render() {
