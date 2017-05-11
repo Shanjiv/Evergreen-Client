@@ -7,7 +7,6 @@ class Home_Nav extends Component {
     componentDidMount() {}
 
     logoutHandler = () => {
-      console.log('what??')
 
       axios.post('/logout', {session: window.sessionStorage.getItem("session")})
         .then((result) => {
@@ -39,7 +38,7 @@ class Home_Nav extends Component {
                                     <input type="search" placeholder="type new groupname" ref="search"/>
                                 </li>
                                 <li>
-                                    <input type="submit" className="button" value="Add Group"/>
+                                    <input ref="addGroupInput" type="submit" onClick={() => {this.props.createHandler(this.refs.search.value); this.refs.search.value = ''}} className="button" value="Add Group"/>
                                 </li>
                             </ul>
                         </form>

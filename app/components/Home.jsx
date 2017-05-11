@@ -8,42 +8,99 @@ class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      groups: []
+      groups: [],
+      groupInputFlag: null,
+      pageInputFlag: null
     }
   }
 
   componentDidMount() {
-    // axios.post('/logged', {session: window.sessionStorage.getItem("session")}).then((result) => {
-      axios.post('/getUserPageConfig', {session: window.sessionStorage.getItem("session")}).then((userPageConfig) => {
-        console.log('aa', userPageConfig.data);
-        this.setState({groups: userPageConfig.data.Groups})
-      }).catch((err) => {})
-    // }).catch((e) => {
-    //   // console.log('e', e.response);
-    //
-    //   this.context.router.push('/')
-    // })
+    axios.post('/getUserPageConfig', {session: window.sessionStorage.getItem("session")}).then((userPageConfig) => {
+      console.log('aa', userPageConfig.data);
+      this.setState({groups: userPageConfig.data.Groups, ownerId: userPageConfig.data.OwnerId})
+    }).catch((err) => {})
+  }
+
+  renameHandler = (index) => {
+    this.setState(Object.assign({}, this.state, {
+      groups: [
+        ...this.state.groups.slice(0, index),
+        Object.assign({}, this.state.groups[index], {
+          Title: this.refs['groupInput' + index].value
+        }),
+        ...this.state.groups.slice(index + 1)
+      ],
+      groupInputFlag: null
+    }), () => {
+      this.saveChange();
+    })
+  }
+
+  deleteHandler = (index) => {
+    this.setState(Object.assign({}, this.state, {
+      groups: [
+        ...this.state.groups.slice(0, index),
+        ...this.state.groups.slice(index + 1)
+      ]
+    }), () => {
+      this.saveChange();
+    })
+  }
+
+  createHandler = (name) => {
+    let tempindex = 0;
+    this.state.groups.map((entry) => {
+      if (parseInt(entry.Index) > tempindex) {
+        tempindex = parseInt(entry.Index);
+      }
+    })
+    tempindex++;
+    this.setState(Object.assign({}, this.state, {
+      groups: [
+        ...this.state.groups,
+        {Title: name, Index: tempindex.toString()}
+      ]
+    }), () => {
+      this.saveChange();
+    })
+  }
+
+  saveChange = () => {
+    axios.post('modifyUserPageConfig', {session: window.sessionStorage.getItem("session"), config: {OwnerId: this.state.ownerId, Groups: this.state.groups}})
+      .then(() => {
+
+      })
+      .catch((err) => {
+        console.error('error occured', err);
+      })
   }
 
   render() {
     return (
       <div>
-        <Home_Nav router={this.context.router}/>
+        <Home_Nav createHandler={this.createHandler} router={this.context.router}/>
         <ul className="flex-container">
-          {this.state.groups && this.state.groups.map((entry) => {
+          {this.state.groups && this.state.groups.map((entry, index) => {
             return (
               <li key={entry.Index} className="flex-item">
                 <ul className="list-group">
                   <li className="list-group-item active">
                     <div className="handleGroupname">
-                      <div>
+                      <button onClick={() => {this.setState({groupInputFlag: index})}}>
                         Rename
-                      </div>
-                      <div>
+                      </button>
+                      <button onClick={() => {this.deleteHandler(index)}}>
                         Delete
-                      </div>
+                      </button>
                     </div>
-                    {entry.Title}
+                    { this.state.groupInputFlag === index ?
+                      <div>
+                        <input ref={`groupInput${index}`} type="text" defaultValue={entry.Title}/>
+                        <button type="submit" onClick={() => this.renameHandler(index)}>Save</button>
+                      </div>
+                      :
+                      <span>{entry.Title}</span>
+                    }
                   </li>
                   { entry.Pages && Object.prototype.toString.call( entry.Pages ) === '[object Array]' && entry.Pages.map((page, pageIndex) => {
                     return (
@@ -81,7 +138,7 @@ class Home extends Component {
             )
           })}
 
-          <li className="flex-item">
+          {/* <li className="flex-item">
             <ul className="list-group">
               <li className="list-group-item active">Groupname</li>
               <button className="dropdown button" type="button">Add new site</button>
@@ -94,7 +151,7 @@ class Home extends Component {
               <button type="button" className="button expanded" onClick={this.addServer}>Add new site</button>
 
             </ul>
-          </li>
+          </li> */}
         </ul>
       </div>
     );

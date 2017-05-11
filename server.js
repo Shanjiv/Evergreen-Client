@@ -247,24 +247,6 @@ app.use('/login', function (req, res) {
   });
 })
 
-// to check if user is logged or not, probably need to ask from webserver now its just comparing session with the LoginResult.json
-
-app.use('/logged', function (req, res) {
-  if (!req.body.session) {
-    return res.status(400).send('session missing!')
-  }
-  fs.readFile('LoginResult.json', function (err, loginresult) {
-    if (err) return res.status(500).send('couldn\'t read file');
-
-    var jsonData = JSON.parse(loginresult)
-
-    if (req.body.session !== jsonData.result.Session)
-      return res.status(400).send('auth error!');
-
-    res.send('success');
-  })
-})
-
 // here need to remove session from database for now its just removing it from frontend sessionStorage
 
 app.use('/logout', function (req, res) {
@@ -294,37 +276,6 @@ app.use('/logout', function (req, res) {
   })
 })
 
-
-
-app.get('/test1', function (req, res) {
-
-  var args = {
-    auth: {
-      AuthSession: "frAQBc8Wsa1xVPfvJcrgRYwTiizs2t"
-    }
-  }
-
-  soap.createClient(webServiceUrl, function (err, client) {
-    if (err)
-      return res.status(500).send('couldn\'t create soap client');
-
-    client.GetUserPageConfig(args, function(err, response) {
-      if (err)
-        return res.status(500).send('error occured');
-
-      if (response.errors && response.errors.Errors)
-        return res.status(400).send(response.errors.Errors.ErrorMessage);
-
-      console.log('response', response);
-
-      if (!response.result)
-        return res.status(500).send('something wrong');
-
-      res.send(response.Config);
-    })
-  })
-})
-
 // for now its reading from file
 app.use('/getUserPageConfig', function (req, res) {
   if (!req.body.session) {
@@ -335,9 +286,7 @@ app.use('/getUserPageConfig', function (req, res) {
     auth: {
       AuthSession: req.body.session
     }
-  }//pls save and res it and lets try again what shows on terminal lets see it
-
-  console.log('args', args)
+  }
 
   soap.createClient(webServiceUrl, function (err, client) {
     if (err)
@@ -367,7 +316,34 @@ app.use('/getUserPageConfig', function (req, res) {
   // })
 })
 
+app.use('/modifyUserPageConfig', function (req, res) {
 
+  if (!req.body.session) {
+    return res.status(400).send('session missing!');
+  }
+
+  let args = {
+    auth: {
+      AuthSession: req.body.session
+    },
+    NewConfig: req.body.config
+  }
+
+  soap.createClient(webServiceUrl, function (err, client) {
+    if (err)
+      return res.status(500).send('couldn\'t create soap client');
+
+    client.ModifyUserPageConfig(args, function(err, response) {
+      if (err)
+        return res.status(500).send('error occured');
+
+      if (response.errors && response.errors.Errors)
+        return res.status(400).send(response.errors.Errors.ErrorMessage);
+
+      res.send(response);
+    })
+  })
+})
 
 
 

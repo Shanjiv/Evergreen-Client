@@ -28,13 +28,6 @@ class LoginApp extends Component {
   }
 
   componentDidMount () {
-    // axios.post('/logged', {session: window.sessionStorage.getItem("session")})
-    //   .then((result) => {
-    //     this.context.router.push('/home')
-    //   })
-    //   .catch((e) => {
-    //
-    //   })
   }
 
   refreshServers = () => {
