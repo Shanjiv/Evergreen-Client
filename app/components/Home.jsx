@@ -66,7 +66,24 @@ class Home extends Component {
   }
 
   saveChange = () => {
-    axios.post('modifyUserPageConfig', {session: window.sessionStorage.getItem("session"), config: {OwnerId: this.state.ownerId, Groups: this.state.groups}})
+
+    let tempGroups = JSON.parse(JSON.stringify(this.state.groups));
+
+    this.state.groups.map((entry, index) => {
+      if (Object.prototype.toString.call( entry.Pages ) === '[object Object]') {
+        tempGroups[index].Pages = entry.Pages.Id.toString();
+      } else if (Object.prototype.toString.call( entry.Pages ) === '[object Array]') {
+        tempGroups[index].Pages = [];
+        entry.Pages.map((page) => {
+          tempGroups[index].Pages.push(page.Id.toString())
+        })
+      } else {
+        // delete tempGroups[index].Pages
+      }
+    })
+
+
+    axios.post('modifyUserPageConfig', {session: window.sessionStorage.getItem("session"), config: {OwnerId: this.state.ownerId, Groups: tempGroups}})
       .then(() => {
 
       })
