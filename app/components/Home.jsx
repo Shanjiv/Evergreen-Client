@@ -71,12 +71,33 @@ class Home extends Component {
   }
 
   deleteFunction = (pageId) => {
-    axios.post('deletePage', {session: window.sessionStorage.getItem("session"), pageId: pageId})
-      .then((result) => {
-        this.saveChange();
+
+    let tempGroups = JSON.parse(JSON.stringify(this.state.groups));
+
+    this.state.groups.map((entry, index) => {
+      if (Object.prototype.toString.call( entry.Pages ) === '[object Object]') {
+        tempGroups[index].Pages = entry.Pages.Id.toString();
+      } else if (Object.prototype.toString.call( entry.Pages ) === '[object Array]') {
+        tempGroups[index].Pages = [];
+        entry.Pages.map((page) => {
+          tempGroups[index].Pages.push(page.Id.toString())
+        })
+      } else {
+        // delete tempGroups[index].Pages
+      }
+    })
+
+    axios.post('modifyUserPageConfig', {session: window.sessionStorage.getItem("session"), config: {OwnerId: this.state.ownerId, Groups: tempGroups}})
+      .then(() => {
+        axios.post('deletePage', {session: window.sessionStorage.getItem("session"), pageId: pageId})
+          .then((result) => {
+          })
+          .catch((error) => {
+            console.error('error occured', error);
+          })
       })
-      .catch((error) => {
-        console.error('error occured', error);
+      .catch((err) => {
+        console.error('error occured', err);
       })
   }
 
