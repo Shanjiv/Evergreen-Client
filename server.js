@@ -396,10 +396,94 @@ app.use('/modifyUserPageConfig', function (req, res) {
 
 
 
+app.use('/addPage', function (req, res) {
+  if (!req.body.session) return res.status(400).send('session missing!');
+  if (!req.body.page) return res.status(400).send('page missing!');
 
+  let args = {
+    auth: {
+      AuthSession: req.body.session
+    },
+    NewPage: req.body.page
+  }
 
+  soap.createClient(webServiceUrl, function (err, client) {
+    if (err)
+      return res.status(500).send('couldn\'t create soap client');
 
+    client.AddPage(args, function(err, response) {
+      if (err)
+        return res.status(500).send('error occured');
 
+      if (response.errors && response.errors.Errors)
+        return res.status(400).send(response.errors.Errors.ErrorMessage);
+
+      res.send(response);
+    })
+  })
+
+  // res.send({"PageId": "348", "errors": null})
+})
+
+app.use('/deletePage', function (req, res) {
+  if (!req.body.session) return res.status(400).send('session missing!');
+  if (!req.body.pageId) return res.status(400).send('pageId missing!');
+
+  let args = {
+    auth: {
+      AuthSession: req.body.session
+    },
+    PageID: req.body.pageId
+  }
+
+  soap.createClient(webServiceUrl, function (err, client) {
+    if (err)
+      return res.status(500).send('couldn\'t create soap client');
+
+    client.DeletePage(args, function(err, response) {
+      if (err)
+        return res.status(500).send('error occured');
+
+      if (response.errors && response.errors.Errors)
+        return res.status(400).send(response.errors.Errors.ErrorMessage);
+
+      res.send(response);
+    })
+  })
+
+  // res.send('success');
+})
+
+app.use('/editPage', function (req, res) {
+  if (!req.body.session) return res.status(400).send('session missing!');
+  if (!req.body.page) return res.status(400).send('page missing!');
+
+  let args = {
+    auth: {
+      AuthSession: req.body.session
+    },
+    Page: req.body.page
+  }
+
+  console.log('args', args);
+
+  soap.createClient(webServiceUrl, function (err, client) {
+    if (err)
+      return res.status(500).send('couldn\'t create soap client');
+
+    client.ModifyPage(args, function(err, response) {
+      if (err)
+        return res.status(500).send('error occured');
+
+      if (response.errors && response.errors.Errors)
+        return res.status(400).send(response.errors.Errors.ErrorMessage);
+
+      res.send(response);
+    })
+  })
+
+  // res.send('success');
+})
 
 // ////ADDING NEW Page will get PageID. Use the PageID to add it in the ModifyUserPageConfig args
 // ////Response result is: {"PageId":"348","errors":null}

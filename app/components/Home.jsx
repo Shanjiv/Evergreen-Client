@@ -10,7 +10,8 @@ class Home extends Component {
     this.state = {
       groups: [],
       groupInputFlag: null,
-      pageInputFlag: null
+      pageCreateInputFlag: null,
+      pageEditInputFlag: null,
     }
   }
 
@@ -22,18 +23,22 @@ class Home extends Component {
   }
 
   renameHandler = (index) => {
-    this.setState(Object.assign({}, this.state, {
-      groups: [
-        ...this.state.groups.slice(0, index),
-        Object.assign({}, this.state.groups[index], {
-          Title: this.refs['groupInput' + index].value
-        }),
-        ...this.state.groups.slice(index + 1)
-      ],
-      groupInputFlag: null
-    }), () => {
-      this.saveChange();
-    })
+    if (this.refs['groupInput' + index].value) {
+      this.setState(Object.assign({}, this.state, {
+        groups: [
+          ...this.state.groups.slice(0, index),
+          Object.assign({}, this.state.groups[index], {
+            Title: this.refs['groupInput' + index].value
+          }),
+          ...this.state.groups.slice(index + 1)
+        ],
+        groupInputFlag: null
+      }), () => {
+        this.saveChange();
+      })
+    } else {
+      this.setState({groupInputFlag: null});
+    }
   }
 
   deleteHandler = (index) => {
@@ -65,7 +70,201 @@ class Home extends Component {
     })
   }
 
-  saveChange = () => {
+  deleteFunction = (pageId) => {
+    axios.post('deletePage', {session: window.sessionStorage.getItem("session"), pageId: pageId})
+      .then((result) => {
+        this.saveChange();
+      })
+      .catch((error) => {
+        console.error('error occured', error);
+      })
+  }
+
+  editFunction = (page) => {
+    axios.post('editPage', {session: window.sessionStorage.getItem("session"), page: page})
+      .then((result) => {
+
+      })
+      .catch((error) => {
+        console.error('error occured', error);
+      })
+  }
+
+  pageDeleteHandler = (index, pageIndex) => {
+    if (pageIndex || pageIndex === 0) {
+      let pageId = this.state.groups[index].Pages[pageIndex].Id;
+      if (this.state.groups[index].Pages.length > 2) {
+        this.setState(Object.assign({}, this.state, {
+          groups: [
+            ...this.state.groups.slice(0, index),
+            Object.assign({}, this.state.groups[index], {
+              Pages: [
+                ...this.state.groups[index].Pages.slice(0, pageIndex),
+                ...this.state.groups[index].Pages.slice(pageIndex + 1)
+              ]
+            }),
+            ...this.state.groups.slice(index + 1)
+          ]
+        }), () => {
+          this.deleteFunction(pageId)
+        })
+      } else if (this.state.groups[index].Pages.length === 2) {
+        let otherIndex = pageIndex === 1 ? 0 : 1;
+        this.setState(Object.assign({}, this.state, {
+          groups: [
+            ...this.state.groups.slice(0, index),
+            Object.assign({}, this.state.groups[index], {
+              Pages: this.state.groups[index].Pages[otherIndex]
+            }),
+            ...this.state.groups.slice(index + 1)
+          ]
+        }), () => {
+          this.deleteFunction(pageId)
+        })
+      } else if (this.state.groups[index].Pages.length === 1) {
+        this.setState(Object.assign({}, this.state, {
+          groups: [
+            ...this.state.groups.slice(0, index),
+            Object.assign({}, this.state.groups[index], {
+              Pages: null
+            }),
+            ...this.state.groups.slice(index + 1)
+          ]
+        }), () => {
+          this.deleteFunction(pageId)
+        })
+      }
+    } else {
+      let pageId = this.state.groups[index].Pages.Id;
+      this.setState(Object.assign({}, this.state, {
+        groups: [
+          ...this.state.groups.slice(0, index),
+          Object.assign({}, this.state.groups[index], {
+            Pages: null
+          }),
+          ...this.state.groups.slice(index + 1)
+        ]
+      }), () => {
+        this.deleteFunction(pageId)
+      })
+    }
+  }
+
+  pageCreateHandler = (index) => {
+
+    let title = this.refs['pageCreateInput' + index].value;
+    if (title) {
+      axios.post('addPage', {session: window.sessionStorage.getItem("session"), page: {Title: title, ConfigXML: ''}})
+      .then((result) => {
+        if (Object.prototype.toString.call( this.state.groups[index].Pages ) === '[object Object]') {
+          this.setState(Object.assign({}, this.state, {
+            groups: [
+              ...this.state.groups.slice(0, index),
+              Object.assign({}, this.state.groups[index], {
+                Pages: [
+                  this.state.groups[index].Pages,
+                  {Title: title, Id: result.data.PageId, ConfigXML: ''}
+                ]
+              }),
+              ...this.state.groups.slice(index + 1)
+            ],
+            pageCreateInputFlag: null
+          }), () => {
+            this.saveChange(true);
+          })
+        } else if (Object.prototype.toString.call( this.state.groups[index].Pages ) === '[object Array]') {
+          this.setState(Object.assign({}, this.state, {
+            groups: [
+              ...this.state.groups.slice(0, index),
+              Object.assign({}, this.state.groups[index], {
+                Pages: [
+                  ...this.state.groups[index].Pages,
+                  {Title: title, Id: result.data.PageId, ConfigXML: ''}
+                ]
+              }),
+              ...this.state.groups.slice(index + 1)
+            ],
+            pageCreateInputFlag: null
+          }), () => {
+            this.saveChange(true);
+          })
+        } else {
+          this.setState(Object.assign({}, this.state, {
+            groups: [
+              ...this.state.groups.slice(0, index),
+              Object.assign({}, this.state.groups[index], {
+                Pages: {Title: title, Id: result.data.PageId, ConfigXML: ''}
+              }),
+              ...this.state.groups.slice(index + 1)
+            ],
+            pageCreateInputFlag: null
+          }), () => {
+            this.saveChange(true);
+          })
+        }
+      })
+      .catch((err) => {
+        console.error('error occured', err);
+      })
+    } else {
+      this.setState({pageCreateInputFlag: null});
+    }
+  }
+
+  pageCreateToggle = (index) => {
+    this.setState({pageCreateInputFlag: index});
+  }
+
+  pageEditHandler = (index, pageIndex, page) => {
+
+    if (pageIndex || pageIndex === 0) {
+      let title = this.refs['pageEditInput' + index + 'arr' + pageIndex].value;
+      if (title) {
+        this.setState(Object.assign({}, this.state, {
+          groups: [
+            ...this.state.groups.slice(0, index),
+            Object.assign({}, this.state.groups[index], {
+              Pages: [
+                ...this.state.groups[index].Pages.slice(0, pageIndex),
+                Object.assign({}, this.state.groups[index].Pages[pageIndex], {
+                  Title: title
+                }),
+                ...this.state.groups[index].Pages.slice(pageIndex + 1)
+              ]
+            }),
+            ...this.state.groups.slice(index + 1)
+          ],
+          pageEditInputFlag: null
+        }), () => {
+          this.editFunction(this.state.groups[index].Pages[pageIndex]);
+        })
+      } else {
+        this.setState({pageEditInputFlag: null});
+      }
+    } else {
+      let title = this.refs['pageEditInput' + index].value;
+      if (title) {
+        this.setState(Object.assign({}, this.state, {
+          groups: [
+            ...this.state.groups.slice(0, index),
+            Object.assign({}, this.state.groups[index], {
+              Pages: Object.assign({}, this.state.groups[index].Pages, {
+                Title: title
+              })
+            }),
+            ...this.state.groups.slice(index + 1)
+          ],
+          pageEditInputFlag: null
+        }), () => {
+          this.editFunction(this.state.groups[index].Pages);
+        })
+      } else {
+        this.setState({pageEditInputFlag: null});
+      }
+    }
+  }
+
+  saveChange = (flag) => {
 
     let tempGroups = JSON.parse(JSON.stringify(this.state.groups));
 
@@ -85,7 +284,11 @@ class Home extends Component {
 
     axios.post('modifyUserPageConfig', {session: window.sessionStorage.getItem("session"), config: {OwnerId: this.state.ownerId, Groups: tempGroups}})
       .then(() => {
-
+        if (flag) {
+          axios.post('/getUserPageConfig', {session: window.sessionStorage.getItem("session")}).then((userPageConfig) => {
+            this.setState({groups: userPageConfig.data.Groups, ownerId: userPageConfig.data.OwnerId})
+          }).catch((err) => {})
+        }
       })
       .catch((err) => {
         console.error('error occured', err);
@@ -123,14 +326,21 @@ class Home extends Component {
                     return (
                       <li key={pageIndex} className="list-group-item">
                         <div className="handleGroupname">
-                          <div>
+                          <button onClick={() => {this.setState({pageEditInputFlag: {index: index, pageIndex: pageIndex}})}}>
                             Rename
-                          </div>
-                          <div>
+                          </button>
+                          <button onClick={() => {this.pageDeleteHandler(index, pageIndex)}}>
                             Delete
-                          </div>
+                          </button>
                         </div>
-                        {page.Title}
+                        { (this.state.pageEditInputFlag && this.state.pageEditInputFlag.index === index && this.state.pageEditInputFlag.pageIndex === pageIndex) ?
+                          <div>
+                            <input ref={`pageEditInput${index}arr${pageIndex}`} type="text" defaultValue={page.Title}/>
+                            <button type="submit" onClick={() => this.pageEditHandler(index, pageIndex, page)}>Save</button>
+                          </div>
+                          :
+                          <span>{page.Title}</span>
+                        }
                       </li>
                     )
                   })}
@@ -138,18 +348,31 @@ class Home extends Component {
                   { entry.Pages && Object.prototype.toString.call( entry.Pages ) === '[object Object]' &&
                     <li className="list-group-item">
                       <div className="handleGroupname">
-                        <div>
-                          Renamea
-                        </div>
-                        <div>
+                        <button onClick={() => {this.setState({pageEditInputFlag: {index: index, pageIndex: null}})}}>
+                          Rename
+                        </button>
+                        <button onClick={() => {this.pageDeleteHandler(index)}}>
                           Delete
-                        </div>
+                        </button>
                       </div>
-                      {entry.Pages.Title}
+                      { (this.state.pageEditInputFlag && this.state.pageEditInputFlag.index === index && this.state.pageEditInputFlag.pageIndex === null) ?
+                        <div>
+                          <input ref={`pageEditInput${index}`} type="text" defaultValue={entry.Pages.Title}/>
+                          <button type="submit" onClick={() => this.pageEditHandler(index, null, entry.Pages)}>Save</button>
+                        </div>
+                        :
+                        <span>{entry.Pages.Title}</span>
+                      }
                     </li>
                   }
-
-                  <button className="dropdown button" type="button">Add new site</button>
+                  { this.state.pageCreateInputFlag === index ?
+                    <div>
+                      <input ref={`pageCreateInput${index}`} type="text"/>
+                      <button type="submit" onClick={() => this.pageCreateHandler(index)}>Save</button>
+                    </div>
+                    :
+                    <button className="dropdown button" type="button" onClick={() => {this.pageCreateToggle(index)}}>Add new site</button>
+                  }
                 </ul>
               </li>
             )
