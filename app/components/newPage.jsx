@@ -51,14 +51,9 @@ class newPage extends Component {
                             <button className="dropdown button" type="button">Configure Widget</button>
                             <div className="large-12 columns">
                                 <form>
-                                    <div class="row">
-                                        <div class="larger-12 columns">
-                                            <label>Bind element
-                                                <select>
-                                                    <option value="bindElement">bindValue</option>
-                                                    <option value="bindElement">bindName</option>
-                                                </select>
-                                            </label>
+                                    <div className="row">
+                                        <div className="larger-12 columns">
+
                                             <label>Select machine
                                                 <select>
                                                     <option value="">TEST_MACHINE</option>
@@ -77,7 +72,7 @@ class newPage extends Component {
                                                 <input type="number" value="5"/>
                                             </label>
                                             <input type="checkbox"/>
-                                            <label for="checkbox2">Activate Subscribe (Dataupdate)</label>
+                                            <label htmlFor="checkbox2">Activate Subscribe (Dataupdate)</label>
                                         </div>
                                     </div>
                                     <button className="button expanded">Set Widget</button>
@@ -102,14 +97,9 @@ class newPage extends Component {
                             <button className="dropdown button" type="button">Configure Widget</button>
                             <div className="large-12 columns">
                                 <form>
-                                    <div class="row">
-                                        <div class="larger-12 columns">
-                                            <label>Bind element
-                                                <select>
-                                                    <option value="outValue">outValue</option>
-                                                    <option value="inValue">inValue</option>
-                                                </select>
-                                            </label>
+                                    <div className="row">
+                                        <div className="larger-12 columns">
+
                                             <label>Select machine
                                                 <select>
                                                     <option value="">TEST_MACHINE</option>
@@ -128,7 +118,7 @@ class newPage extends Component {
                                                 <input type="number" value="5"/>
                                             </label>
                                             <input type="checkbox"/>
-                                            <label for="checkbox2">Activate Subscribe (Dataupdate)</label>
+                                            <label htmlFor="checkbox2">Activate Subscribe (Dataupdate)</label>
                                         </div>
                                     </div>
                                     <button className="button expanded">Set Widget</button>
@@ -152,14 +142,9 @@ class newPage extends Component {
                             <button className="dropdown button" type="button">Configure Widget</button>
                             <div className="large-12 columns">
                                 <form>
-                                    <div class="row">
-                                        <div class="larger-12 columns">
-                                            <label>Bind element
-                                                <select>
-                                                    <option value="bindElement">bindValue</option>
-                                                    <option value="bindElement">bindName</option>
-                                                </select>
-                                            </label>
+                                    <div className="row">
+                                        <div className="larger-12 columns">
+
                                             <label>Select machine
                                                 <select>
                                                     <option value="">TEST_MACHINE</option>
@@ -178,7 +163,7 @@ class newPage extends Component {
                                                 <input type="number" value="5"/>
                                             </label>
                                             <input type="checkbox"/>
-                                            <label for="checkbox2">Activate Subscribe (Dataupdate)</label>
+                                            <label htmlFor="checkbox2">Activate Subscribe (Dataupdate)</label>
                                         </div>
                                     </div>
                                     <button className="button expanded">Set Widget</button>
@@ -205,14 +190,9 @@ class newPage extends Component {
                             <button className="dropdown button" type="button">Configure Widget</button>
                             <div className="large-12 columns">
                                 <form>
-                                    <div class="row">
-                                        <div class="larger-12 columns">
-                                            <label>Bind element
-                                                <select>
-                                                    <option value="bindElement">bindValue</option>
-                                                    <option value="bindElement">bindName</option>
-                                                </select>
-                                            </label>
+                                    <div className="row">
+                                        <div className="larger-12 columns">
+
                                             <label>Select machine
                                                 <select>
                                                     <option value="">TEST_MACHINE</option>
@@ -231,7 +211,7 @@ class newPage extends Component {
                                                 <input type="number" value="5"/>
                                             </label>
                                             <input type="checkbox"/>
-                                            <label for="checkbox2">Activate Subscribe (Dataupdate)</label>
+                                            <label htmlFor="checkbox2">Activate Subscribe (Dataupdate)</label>
                                         </div>
                                     </div>
                                     <button className="button expanded">Set Widget</button>
@@ -257,14 +237,9 @@ class newPage extends Component {
                             <button className="dropdown button" type="button">Configure Widget</button>
                             <div className="large-12 columns">
                                 <form>
-                                    <div class="row">
-                                        <div class="larger-12 columns">
-                                            <label>Bind element
-                                                <select>
-                                                    <option value="bindElement">bindValue</option>
-                                                    <option value="bindElement">bindName</option>
-                                                </select>
-                                            </label>
+                                    <div className="row">
+                                        <div className="larger-12 columns">
+                                    
                                             <label>Select machine
                                                 <select>
                                                     <option value="">TEST_MACHINE</option>
@@ -283,7 +258,7 @@ class newPage extends Component {
                                                 <input type="number" value="5"/>
                                             </label>
                                             <input type="checkbox"/>
-                                            <label for="checkbox2">Activate Subscribe (Dataupdate)</label>
+                                            <label htmlFor="checkbox2">Activate Subscribe (Dataupdate)</label>
                                         </div>
                                     </div>
                                     <button className="button expanded">Set Widget</button>

@@ -348,54 +348,6 @@ app.use('/modifyUserPageConfig', function (req, res) {
 
 
 
-
-// /// Modify: Edit groupname and add/delete groups or delete page
-// /// If user add a new group, then new object will be pushed to the groups array
-// ///If user rename group, then title of group will be changed. And if user delete group, then group object will be deleted in the array.
-// // If user delete page, then delete Pages ID from the Pages array
-//
-//  var url = './EvergreenWebService.wsdl';
-//  var args = {
-//      auth: {
-//          AuthSession: 'aMeAjSWfchoZYFYZ5B6kzMCk8R6BEu'
-//      },
-//
-//          NewConfig: {
-//              OwnerId: 'admin',
-//              Groups: [{
-//                      Title: 'R3JvdXBB',
-//                      Index: 1,
-//                      Pages: ['345', '346']
-//                  },
-//                  {
-//                      Title: 'R3JvdXBC',
-//                      Index: 2,
-//                      Pages: '344'
-//                  },
-//                  {
-//                      Title: 'R3JvdXBD',
-//                      Index: 3,
-//                      Pages: '325'
-//                  },
-//                  {
-//                      Title: 'R3JvdXBD',
-//                      Index: 4,
-//                      Pages: '326'
-//                  }
-//              ],
-//          },
-//  };
-//
-//  soap.createClient(url, function(err, client) {
-//      client.ModifyUserPageConfig(args, function(err, result) {
-//          console.log(JSON.stringify(result));
-//       });
-//   });
-
-
-
-
-
 app.use('/addPage', function (req, res) {
   if (!req.body.session) return res.status(400).send('session missing!');
   if (!req.body.page) return res.status(400).send('page missing!');
@@ -485,27 +437,78 @@ app.use('/editPage', function (req, res) {
   // res.send('success');
 })
 
-// ////ADDING NEW Page will get PageID. Use the PageID to add it in the ModifyUserPageConfig args
-// ////Response result is: {"PageId":"348","errors":null}
-//
-// var url = './EvergreenWebService.wsdl';
-// var args = {
-//     auth: {
-//         AuthSession: 'NIsNrmwUlN5u9t3tgj2tusZBauFkrF'
-//     },
-//
-//         NewPage: {
-//             Title: 'test',
-//             ConfigXML: ''
-//         },
-// };
-//
-// soap.createClient(url, function(err, client) {
-//     client.AddPage(args, function(err, result) {
-//         console.log(JSON.stringify(result));
-//      });
-//  });
 
+
+
+///////////////////////////////////
+////////GET MACHINE NAMES
+ //
+ // var url = './EvergreenWebService.wsdl';
+ // var args = {
+ //     auth: {
+ //         AuthSession: 'rQF69AzBlax3CF3EDNhm3soLBPh71Y'
+ //     }
+ //   };
+ //
+ // soap.createClient(url, function(err, client) {
+ //     client.GetMachines(args, function(err, result) {
+ //         console.log(JSON.stringify(result));
+ //      });
+ //  });
+ ////////POPULATE SELECT MACHINE SELECTBOX WITH ID
+ ////////Response of GetMachines IS:
+ //////// {"Machines":
+ ////////    {"Machines":
+ ////////     {"Name":"TEST_MACHINE",
+ ////////         "Id":"TEST_MACHINE",
+ ////////  "ConnectionStatus":"Online"
+ ////////      }
+ ////////    },
+ ////////  "errors":null
+ ////////  }
+ ///////////////////////////////////
+
+
+
+ ///////////////////////////////////
+// ////////GET ALL NAMES
+ //
+ // var url = './EvergreenWebService.wsdl';
+ // var args = {
+ //     auth: {
+ //         AuthSession: 'exuieaoEiIgxIX4a2dREbbSqWy6yhK'
+ //     }
+ //   };
+ //
+ // soap.createClient(url, function(err, client) {
+ //     client.GetAllNodes(args, function(err, result) {
+ //         console.log(JSON.stringify(result));
+ //      });
+ //  });
+///////GOAL: POPULATE BINDVALUE SELECTBOX WITH NODEIDS!!!
+///////RESPONSE OF GETALLNODES IS:
+// {
+//     "GetAllNodesResponse": {
+//         "Nodes": [{
+//             "NodeId": "DemoBool",
+//             "MachineId": "TEST_MACHINE",
+//             "NodeName": "DemoBool",
+//             "NodeKind": "VARIABLE_BOOLEAN"
+//         }, {
+//             "NodeId": "DemoDouble",
+//             "MachineId": "TEST_MACHINE",
+//             "NodeName": "DemoDouble",
+//             "NodeKind": "VARIABLE_DOUBLE"
+//         }, {
+//             "NodeId": "DemoStaticBool",
+//             "MachineId": "TEST_MACHINE",
+//             "NodeName": "DemoStaticBool",
+//             "NodeKind": "VARIABLE_BOOLEAN"
+//         }]
+//     },
+//     "errors": null
+// }
+///////////////////////////////////
 
 
 
