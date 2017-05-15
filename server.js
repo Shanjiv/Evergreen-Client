@@ -58,122 +58,122 @@ app.get('/readserverlist', (req, res) => {
   });
 })
 
-// app.use('/addserver', function(req, res) {
-//
-//   if (!req.body.servername) {
-//     return res.status(400).send('servername missing!')
-//   }
-//
-//   if (!req.body.serverip) {
-//     return res.status(400).send('serverip missing!')
-//   }
-//
-//   if (!req.body.serverport) {
-//     return res.status(400).send('serverport missing!')
-//   }
-//
-//   var servername = req.body.servername;
-//   var serveradress = 'http://' + req.body.serverip;
-//   var port = req.body.serverport;
-//
-//   fs.readFile('serverlist0.xml', 'utf-8', function(err, data) {
-//     if (err) {
-//       return res.status(500).send('error occured at file system');
-//     }
-//
-//     // we log out the readFile results
-//     console.log(data);
-//     // we then pass the data to our method here
-//     parseString(data, function(err, result) {
-//       if (err) {
-//         return res.status(500).send('error occured while parsing string');
-//       }
-//
-//       // here we log the results of our xml string conversion
-//       var serverList = result.serverlist.server;
-//       //get the serverNames from json and save as array
-//       var serverNames = serverList.map((server) => {
-//         return server.serverName[0];
-//       });
-//       //CHECK IF SERVERNAME EXISTS and Add server
-//       function checkAndAdd(servername, serveradress, port) {
-//         //var id = serverList.length + 1;
-//         var found = serverList.some(function(serveritem) {
-//           return serveritem.serverName[0] === servername;
-//         });
-//         if (!found) {
-//           return serverList.push({"serverName": [servername], "serverAdress": [serveradress], "port": [port]});
-//         } else {
-//           return false;
-//         }
-//       }
-//       var checker = checkAndAdd(servername, serveradress, port);
-//
-//       if (!checker)
-//         return res.status(400).send('Server already exists please type other name');
-//
-//       // create a new builder object and then convert
-//       // our json back to xml.
-//       var builder = new xml2js.Builder();
-//       var xml = builder.buildObject(result);
-//       fs.writeFile('serverlist0.xml', xml, function(err, data) {
-//         if (err) {
-//           return res.status(500).send('error occured at file system');
-//         }
-//         console.log("successfully written our update xml to file");
-//         res.send('success!')
-//       })
-//     });
-//   });
-// })
-//
-// app.use('/removeserver', function(req, res) {
-//
-//   if (!req.body.servername) {
-//     return res.status(400).send('servername missing!')
-//   }
-//
-//   var servername = req.body.servername;
-//
-//   fs.readFile('serverlist0.xml', 'utf-8', function(err, data) {
-//     if (err)
-//       console.log(err);
-//
-//     // we log out the readFile results
-//     console.log(data);
-//     // we then pass the data to our method here
-//     parseString(data, function(err, result) {
-//       if (err)
-//         console.log(err);
-//
-//       // here we log the results of our xml string conversion
-//       var serverList = result.serverlist.server;
-//
-//       // get the serverNames from json and save as array
-//       var serverNames = serverList.map((server) => {
-//         return server.serverName[0];
-//       });
-//
-//       // delete server from array
-//       result.serverlist.server = serverList.filter(server => server.serverName[0] != servername);
-//
-//       // create a new builder object and then convert
-//       // our json back to xml.
-//       var builder = new xml2js.Builder();
-//       var xml = builder.buildObject(result);
-//
-//       console.log(xml);
-//       fs.writeFile('serverlist0.xml', xml, function(err, data) {
-//         if (err)
-//           console.log(err);
-//
-//         res.send('success!')
-//         console.log("successfully written our update xml to file");
-//       })
-//
-//     });
-//   });
-// })
+app.use('/addserver', function(req, res) {
+
+  if (!req.body.servername) {
+    return res.status(400).send('servername missing!')
+  }
+
+  if (!req.body.serverip) {
+    return res.status(400).send('serverip missing!')
+  }
+
+  if (!req.body.serverport) {
+    return res.status(400).send('serverport missing!')
+  }
+
+  var servername = req.body.servername;
+  var serveradress = 'http://' + req.body.serverip;
+  var port = req.body.serverport;
+
+  fs.readFile('serverlist0.xml', 'utf-8', function(err, data) {
+    if (err) {
+      return res.status(500).send('error occured at file system');
+    }
+
+    // we log out the readFile results
+    console.log(data);
+    // we then pass the data to our method here
+    parseString(data, function(err, result) {
+      if (err) {
+        return res.status(500).send('error occured while parsing string');
+      }
+
+      // here we log the results of our xml string conversion
+      var serverList = result.serverlist.server;
+      //get the serverNames from json and save as array
+      var serverNames = serverList.map((server) => {
+        return server.serverName[0];
+      });
+      //CHECK IF SERVERNAME EXISTS and Add server
+      function checkAndAdd(servername, serveradress, port) {
+        //var id = serverList.length + 1;
+        var found = serverList.some(function(serveritem) {
+          return serveritem.serverName[0] === servername;
+        });
+        if (!found) {
+          return serverList.push({"serverName": [servername], "serverAdress": [serveradress], "port": [port]});
+        } else {
+          return false;
+        }
+      }
+      var checker = checkAndAdd(servername, serveradress, port);
+
+      if (!checker)
+        return res.status(400).send('Server already exists please type other name');
+
+      // create a new builder object and then convert
+      // our json back to xml.
+      var builder = new xml2js.Builder();
+      var xml = builder.buildObject(result);
+      fs.writeFile('serverlist0.xml', xml, function(err, data) {
+        if (err) {
+          return res.status(500).send('error occured at file system');
+        }
+        console.log("successfully written our update xml to file");
+        res.send('success!')
+      })
+    });
+  });
+})
+
+app.use('/removeserver', function(req, res) {
+
+  if (!req.body.servername) {
+    return res.status(400).send('servername missing!')
+  }
+
+  var servername = req.body.servername;
+
+  fs.readFile('serverlist0.xml', 'utf-8', function(err, data) {
+    if (err)
+      console.log(err);
+
+    // we log out the readFile results
+    console.log(data);
+    // we then pass the data to our method here
+    parseString(data, function(err, result) {
+      if (err)
+        console.log(err);
+
+      // here we log the results of our xml string conversion
+      var serverList = result.serverlist.server;
+
+      // get the serverNames from json and save as array
+      var serverNames = serverList.map((server) => {
+        return server.serverName[0];
+      });
+
+      // delete server from array
+      result.serverlist.server = serverList.filter(server => server.serverName[0] != servername);
+
+      // create a new builder object and then convert
+      // our json back to xml.
+      var builder = new xml2js.Builder();
+      var xml = builder.buildObject(result);
+
+      console.log(xml);
+      fs.writeFile('serverlist0.xml', xml, function(err, data) {
+        if (err)
+          console.log(err);
+
+        res.send('success!')
+        console.log("successfully written our update xml to file");
+      })
+
+    });
+  });
+})
 
 
 app.use('/login', function (req, res) {
