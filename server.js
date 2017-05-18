@@ -562,6 +562,145 @@ app.use('/getMachineNames', function (req, res) {
 ///////////////////////////////////
 
 
+///////////////////////////////////
+// ////////GET ALL NAMES
+//
+// var url = './EvergreenWebService.wsdl';
+// var args = {
+//     auth: {
+//         AuthSession: 'exuieaoEiIgxIX4a2dREbbSqWy6yhK'
+//     }
+//   };
+//
+// soap.createClient(url, function(err, client) {
+//     client.GetAllNodes(args, function(err, result) {
+//         console.log(JSON.stringify(result));
+//      });
+//  });
+///////GOAL: POPULATE BINDVALUE SELECTBOX WITH NODEIDS!!!
+///////RESPONSE OF GETALLNODES IS:
+// {
+//     "GetAllNodesResponse": {
+//         "Nodes": [{
+//             "NodeId": "DemoBool",
+//             "MachineId": "TEST_MACHINE",
+//             "NodeName": "DemoBool",
+//             "NodeKind": "VARIABLE_BOOLEAN"
+//         }, {
+//             "NodeId": "DemoDouble",
+//             "MachineId": "TEST_MACHINE",
+//             "NodeName": "DemoDouble",
+//             "NodeKind": "VARIABLE_DOUBLE"
+//         }, {
+//             "NodeId": "DemoStaticBool",
+//             "MachineId": "TEST_MACHINE",
+//             "NodeName": "DemoStaticBool",
+//             "NodeKind": "VARIABLE_BOOLEAN"
+//         }]
+//     },
+//     "errors": null
+// }
+///////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////NEW TASK BEGINS HERE
+
+////////SUBSCRIBE AND PUBLIC REQUEST
+
+
+/////////////////////////////////SUBSCRIBE-Method
+////////VarId and MachineID will be the item which user chooses from selectbox
+///////and TolleranceIntervall will be the milliseconds which the user type in
+//////Everytime user subscribe and click on set button on a widget, then the subscribe function will be invoked.
+/////ContextId will be uniqe. For example User clicks on Set button for first widget, then contextid will be 0,
+////then user clicks on set button on other widget, then contextid will be 1. next widget will have contextid 2 and so on
+
+// var url = './EvergreenWebService.wsdl';
+// var args = {
+//     auth: {
+//         AuthSession: 'IDCdJOyapnxrpMCARCr4zdGc81tBDK'
+//     },
+//    subscriptions: {
+//      UserSubscription: {
+//        ContextId: '0',
+//        Variable: {
+//          VarId: 'DemoBool',
+//          MaschineId: 'TEST_MACHINE',
+//          Prefrences: {
+//            TolleranceIntervall: 5,
+//            TolleranceRange: 0
+//        }
+//      }
+//      }
+//    }
+//   };
+//
+// soap.createClient(url, function(err, client) {
+//     client.Subscribe(args, function(err, result) {
+//         console.log(JSON.stringify(result));
+//      });
+//  });
+
+////RESPONSE OF SUBSCRIBE WILL BE:
+// {
+//   "subscriptionInformation":{
+//     "VarSubscription":{
+//       "ContextId":"1",
+//       "ItemId":"DemoDouble",
+//       "MaschineId":"TEST_MACHINE"
+//     }
+//   },
+//   "errors":null
+// }
+/////////////////////////////////
+
+
+///////////////////////////////////
+// ////////Public Request
+// ///////For example: User have added 2 widgets and invoked subscribe method for each widget with contextid 0 and 1
+// //////Public Request should be triggered consecutively and the response should be displayed. So the inputfield should be updated consecutively
+// var url = './EvergreenWebService.wsdl';
+// var args = {
+//     auth: {
+//         AuthSession: 'IDCdJOyapnxrpMCARCr4zdGc81tBDK'
+//     }
+//   };
+//
+// soap.createClient(url, function(err, client) {
+//     client.PublicRequest(args, function(err, result) {
+//         console.log(JSON.stringify(result));
+//      });
+//  });
+
+// /////RESPONSE OF THE EXAMPLE WILL BE
+//
+// {
+//   "notifications":{
+//     "UserNotifications":[{
+//       "ContextId":"1",
+//       "Variable":{
+//         "VarId":"DemoBool",
+//         "MachineId":"1",
+//         "VarValue":"true"
+//       }
+//     },
+//     {
+//       "ContextId":"0",
+//       "Variable":{
+//         "VarId":"DemoDouble",
+//         "MachineId":"0",
+//         "VarValue":"203463.700001"}
+//       }
+//     ]
+//   },
+//   "errors":null
+// }
+////////////////////////
+
+
+
 
 
 
