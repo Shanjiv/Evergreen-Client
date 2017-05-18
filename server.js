@@ -437,6 +437,31 @@ app.use('/editPage', function (req, res) {
   // res.send('success');
 })
 
+app.use('/getMachineNames', function (req, res) {
+  let args = {
+    auth: {
+      AuthSession: req.body.session
+    },
+    Page: req.body.page
+  }
+
+  soap.createClient(webServiceUrl, function (err, client) {
+    if (err)
+      return res.status(500).send('couldn\'t create soap client');
+
+    client.GetMachines(args, function(err, response) {
+      if (err)
+        return res.status(500).send('error occured');
+
+      if (response.errors && response.errors.Errors)
+        return res.status(400).send(response.errors.Errors.ErrorMessage);
+
+      res.send(response);
+    })
+  })
+
+  // res.send(fs.readFileSync('./GetMachinesResult.json'));
+})
 
 
 
@@ -455,6 +480,8 @@ app.use('/editPage', function (req, res) {
  //         console.log(JSON.stringify(result));
  //      });
  //  });
+
+
  ////////POPULATE SELECT MACHINE SELECTBOX WITH ID
  ////////Response of GetMachines IS:
  //////// {"Machines":
@@ -468,7 +495,31 @@ app.use('/editPage', function (req, res) {
  ////////  }
  ///////////////////////////////////
 
+ app.use('/getAllNodes', function (req, res) {
+   let args = {
+     auth: {
+       AuthSession: req.body.session
+     },
+     Page: req.body.page
+   }
 
+   soap.createClient(webServiceUrl, function (err, client) {
+     if (err)
+       return res.status(500).send('couldn\'t create soap client');
+
+     client.GetAllNodes(args, function(err, response) {
+       if (err)
+         return res.status(500).send('error occured');
+
+       if (response.errors && response.errors.Errors)
+         return res.status(400).send(response.errors.Errors.ErrorMessage);
+
+       res.send(response);
+     })
+   })
+
+  //  res.send(fs.readFileSync('./GetAllNodesResult.json'));
+ })
 
  ///////////////////////////////////
 // ////////GET ALL NAMES
