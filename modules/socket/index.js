@@ -35,7 +35,7 @@ module.exports = function(io) {
     var newInterval;
 
     socket.on('subscribe', function(data) {
-      if (!user[socket.id] && !user[socket.id].session) {
+      if (!users[socket.id]) {
         users[socket.id] = {
           session: data.session,
           contextIds: [data.contextId]
@@ -63,7 +63,7 @@ module.exports = function(io) {
               if (response.errors && response.errors.Errors)
                 return console.log('something wrong!')
 
-              socket.emit('subscription_result', response.result)
+              socket.emit('subscription_result', response)
             })
           })
         } else {

@@ -19,27 +19,51 @@ class newPage extends Component {
   componentDidMount() {
 
     socket.on('subscription_result', (socketData) => {
-      socketData.notifications.UserNotifications.map((entry) => {
-        if (parseInt(entry.ContextId) <= this.state.widgets.length - 1) {
+      console.log('aa', socketData);
+      if (Object.prototype.toString.call( socketData.notifications.UserNotifications ) === '[object Object]') {
+        if (parseInt(socketData.notifications.UserNotifications.ContextId) <= this.state.widgets.length - 1) {
           let tempMs;
-          if (this.state.widgets[entry.ContextId].valueArray.length === 0) {
+          if (this.state.widgets[socketData.notifications.UserNotifications.ContextId].valueArray.length === 0) {
             tempMs = 0;
           } else {
-            tempMs = this.state.widgets[entry.ContextId].valueArray[this.state.widgets[entry.ContextId].valueArray.length - 1].ms + 500;
+            tempMs = this.state.widgets[socketData.notifications.UserNotifications.ContextId].valueArray[this.state.widgets[socketData.notifications.UserNotifications.ContextId].valueArray.length - 1].ms + 500;
           }
 
           this.setState({
             widgets: [
-              ...this.state.widgets.slice(0, parseInt(entry.ContextId)),
-              Object.assign({}, this.state.widgets[parseInt(entry.ContextId)], {
-                value: entry.Variable.VarValue,
-                valueArray: [...this.state.widgets[parseInt(entry.ContextId)].valueArray, {ms: tempMs, val: entry.Variable.VarValue}]
+              ...this.state.widgets.slice(0, parseInt(socketData.notifications.UserNotifications.ContextId)),
+              Object.assign({}, this.state.widgets[parseInt(socketData.notifications.UserNotifications.ContextId)], {
+                value: socketData.notifications.UserNotifications.Variable.VarValue,
+                valueArray: [...this.state.widgets[parseInt(socketData.notifications.UserNotifications.ContextId)].valueArray, {ms: tempMs, val: parseFloat(socketData.notifications.UserNotifications.Variable.VarValue)}]
               }),
-              ...this.state.widgets.slice(parseInt(entry.ContextId) + 1)
+              ...this.state.widgets.slice(parseInt(socketData.notifications.UserNotifications.ContextId) + 1)
             ]
           })
         }
-      })
+      } else {
+        socketData.notifications.UserNotifications.map((entry) => {
+          if (parseInt(entry.ContextId) <= this.state.widgets.length - 1) {
+            let tempMs;
+            if (this.state.widgets[entry.ContextId].valueArray.length === 0) {
+              tempMs = 0;
+            } else {
+              tempMs = this.state.widgets[entry.ContextId].valueArray[this.state.widgets[entry.ContextId].valueArray.length - 1].ms + 500;
+            }
+
+            this.setState({
+              widgets: [
+                ...this.state.widgets.slice(0, parseInt(entry.ContextId)),
+                Object.assign({}, this.state.widgets[parseInt(entry.ContextId)], {
+                  value: entry.Variable.VarValue,
+                  valueArray: [...this.state.widgets[parseInt(entry.ContextId)].valueArray, {ms: tempMs, val: parseFloat(entry.Variable.VarValue)}]
+                }),
+                ...this.state.widgets.slice(parseInt(entry.ContextId) + 1)
+              ]
+            })
+          }
+        })
+      }
+
     })
 
     axios.post('/rest/machine/get', {session: window.sessionStorage.getItem("session")})
