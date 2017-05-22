@@ -63,16 +63,16 @@ module.exports = function(io) {
               if (response.errors && response.errors.Errors)
                 return console.log('something wrong!')
 
-              socket.emit('subscription_result', response)
+              socket.emit('subscription_result', {tolleranceInterval: data.tolleranceInterval > 200 ? data.tolleranceInterval : 200, response: response})
             })
           })
         } else {
           testData.notifications.UserNotifications.forEach(function(entry) {
             entry.Variable.VarValue = Math.random();
           })
-          socket.emit('subscription_result', testData)
+          socket.emit('subscription_result', {tolleranceInterval: data.tolleranceInterval > 200 ? data.tolleranceInterval : 200, response: testData})
         }
-      }, 400);
+      }, data.tolleranceInterval > 200 ? data.tolleranceInterval : 200);
     })
     socket.on('disconnect', function() {
       delete sockets[socket.id];

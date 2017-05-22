@@ -19,36 +19,35 @@ class newPage extends Component {
   componentDidMount() {
 
     socket.on('subscription_result', (socketData) => {
-      console.log('aa', socketData);
-      if (Object.prototype.toString.call( socketData.notifications.UserNotifications ) === '[object Object]') {
-        if (parseInt(socketData.notifications.UserNotifications.ContextId) <= this.state.widgets.length - 1) {
+      if (Object.prototype.toString.call( socketData.response.notifications.UserNotifications ) === '[object Object]') {
+        if (parseInt(socketData.response.notifications.UserNotifications.ContextId) <= this.state.widgets.length - 1) {
           let tempMs;
-          if (this.state.widgets[socketData.notifications.UserNotifications.ContextId].valueArray.length === 0) {
+          if (this.state.widgets[socketData.response.notifications.UserNotifications.ContextId].valueArray.length === 0) {
             tempMs = 0;
           } else {
-            tempMs = this.state.widgets[socketData.notifications.UserNotifications.ContextId].valueArray[this.state.widgets[socketData.notifications.UserNotifications.ContextId].valueArray.length - 1].x + 500;
+            tempMs = this.state.widgets[socketData.response.notifications.UserNotifications.ContextId].valueArray[this.state.widgets[socketData.response.notifications.UserNotifications.ContextId].valueArray.length - 1].x + socketData.tolleranceInterval;
           }
 
           this.setState({
             widgets: [
-              ...this.state.widgets.slice(0, parseInt(socketData.notifications.UserNotifications.ContextId)),
-              Object.assign({}, this.state.widgets[parseInt(socketData.notifications.UserNotifications.ContextId)], {
-                value: socketData.notifications.UserNotifications.Variable.VarValue,
-                valueArray: [...this.state.widgets[parseInt(socketData.notifications.UserNotifications.ContextId)].valueArray, {x: tempMs, y: parseFloat(socketData.notifications.UserNotifications.Variable.VarValue)}]
+              ...this.state.widgets.slice(0, parseInt(socketData.response.notifications.UserNotifications.ContextId)),
+              Object.assign({}, this.state.widgets[parseInt(socketData.response.notifications.UserNotifications.ContextId)], {
+                value: socketData.response.notifications.UserNotifications.Variable.VarValue,
+                valueArray: [...this.state.widgets[parseInt(socketData.response.notifications.UserNotifications.ContextId)].valueArray, {x: tempMs, y: parseFloat(socketData.response.notifications.UserNotifications.Variable.VarValue)}]
               }),
-              ...this.state.widgets.slice(parseInt(socketData.notifications.UserNotifications.ContextId) + 1)
+              ...this.state.widgets.slice(parseInt(socketData.response.notifications.UserNotifications.ContextId) + 1)
             ]
           })
         }
       } else {
-        socketData.notifications.UserNotifications.map((entry) => {
+        socketData.response.notifications.UserNotifications.map((entry) => {
           if (parseInt(entry.ContextId) <= this.state.widgets.length - 1) {
             let tempMs;
             if (this.state.widgets[entry.ContextId].valueArray.length === 0) {
               tempMs = 0;
             } else {
               console.log('aaaaa', this.state.widgets[entry.ContextId].valueArray);
-              tempMs = this.state.widgets[entry.ContextId].valueArray[this.state.widgets[entry.ContextId].valueArray.length - 1].x + 500;
+              tempMs = this.state.widgets[entry.ContextId].valueArray[this.state.widgets[entry.ContextId].valueArray.length - 1].x + socketData.tolleranceInterval;
             }
 
             this.setState({
@@ -109,7 +108,7 @@ class newPage extends Component {
   subscribe = (obj) => {
     axios.post('/rest/subscribe/create', Object.assign({}, obj, {session: window.sessionStorage.getItem("session")}))
       .then((result) => {
-        socket.emit('subscribe', {contextId: obj.contextId, session: window.sessionStorage.getItem("session")});
+        socket.emit('subscribe', {contextId: obj.contextId, tolleranceInterval: parseInt(obj.tolleranceInterval), session: window.sessionStorage.getItem("session")});
       })
       .catch((e) => {
         console.error('bb', e);
