@@ -13,7 +13,7 @@ Checkout this repo, install dependencies, then start the gulp process with the f
 > git clone https://github.com/iswunistuttgart/Evergreen-Client.git
 > cd Evergreen-Client
 > npm install
-> npm start
+> npm start (starting without webservice "node server.js --webservice")
 
 ```
 
