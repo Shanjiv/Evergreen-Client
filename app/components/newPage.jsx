@@ -26,7 +26,7 @@ class newPage extends Component {
           if (this.state.widgets[socketData.notifications.UserNotifications.ContextId].valueArray.length === 0) {
             tempMs = 0;
           } else {
-            tempMs = this.state.widgets[socketData.notifications.UserNotifications.ContextId].valueArray[this.state.widgets[socketData.notifications.UserNotifications.ContextId].valueArray.length - 1].ms + 500;
+            tempMs = this.state.widgets[socketData.notifications.UserNotifications.ContextId].valueArray[this.state.widgets[socketData.notifications.UserNotifications.ContextId].valueArray.length - 1].x + 500;
           }
 
           this.setState({
@@ -34,7 +34,7 @@ class newPage extends Component {
               ...this.state.widgets.slice(0, parseInt(socketData.notifications.UserNotifications.ContextId)),
               Object.assign({}, this.state.widgets[parseInt(socketData.notifications.UserNotifications.ContextId)], {
                 value: socketData.notifications.UserNotifications.Variable.VarValue,
-                valueArray: [...this.state.widgets[parseInt(socketData.notifications.UserNotifications.ContextId)].valueArray, {ms: tempMs, val: parseFloat(socketData.notifications.UserNotifications.Variable.VarValue)}]
+                valueArray: [...this.state.widgets[parseInt(socketData.notifications.UserNotifications.ContextId)].valueArray, {x: tempMs, y: parseFloat(socketData.notifications.UserNotifications.Variable.VarValue)}]
               }),
               ...this.state.widgets.slice(parseInt(socketData.notifications.UserNotifications.ContextId) + 1)
             ]
@@ -47,7 +47,8 @@ class newPage extends Component {
             if (this.state.widgets[entry.ContextId].valueArray.length === 0) {
               tempMs = 0;
             } else {
-              tempMs = this.state.widgets[entry.ContextId].valueArray[this.state.widgets[entry.ContextId].valueArray.length - 1].ms + 500;
+              console.log('aaaaa', this.state.widgets[entry.ContextId].valueArray);
+              tempMs = this.state.widgets[entry.ContextId].valueArray[this.state.widgets[entry.ContextId].valueArray.length - 1].x + 500;
             }
 
             this.setState({
@@ -55,7 +56,7 @@ class newPage extends Component {
                 ...this.state.widgets.slice(0, parseInt(entry.ContextId)),
                 Object.assign({}, this.state.widgets[parseInt(entry.ContextId)], {
                   value: entry.Variable.VarValue,
-                  valueArray: [...this.state.widgets[parseInt(entry.ContextId)].valueArray, {ms: tempMs, val: parseFloat(entry.Variable.VarValue)}]
+                  valueArray: [...this.state.widgets[parseInt(entry.ContextId)].valueArray, {x: tempMs, y: parseFloat(entry.Variable.VarValue)}]
                 }),
                 ...this.state.widgets.slice(parseInt(entry.ContextId) + 1)
               ]
@@ -124,7 +125,7 @@ class newPage extends Component {
         if (this.state.widgets[obj.contextId].valueArray.length === 0) {
           tempMs = 0;
         } else {
-          tempMs = this.state.widgets[obj.contextId].valueArray[this.state.widgets[obj.contextId].valueArray.length - 1].ms + 500;
+          tempMs = this.state.widgets[obj.contextId].valueArray[this.state.widgets[obj.contextId].valueArray.length - 1].x + 500;
         }
 
         console.log('ss');
@@ -134,7 +135,7 @@ class newPage extends Component {
             ...this.state.widgets.slice(0, obj.contextId),
             Object.assign({}, this.state.widgets[obj.contextId], {
               value: result.data.readVarSetResult.VarValues.VarValue,
-              valueArray: [...this.state.widgets[obj.contextId].valueArray, {ms: tempMs, val: result.data.readVarSetResult.VarValues.VarValue}]
+              valueArray: [...this.state.widgets[obj.contextId].valueArray, {x: tempMs, y: result.data.readVarSetResult.VarValues.VarValue}]
             }),
             ...this.state.widgets.slice(obj.contextId + 1)
           ]
@@ -160,7 +161,7 @@ class newPage extends Component {
     if (this.state.widgets[index].valueArray.length === 0) {
       tempMs = 0;
     } else {
-      tempMs = this.state.widgets[index].valueArray[this.state.widgets[index].valueArray.length - 1].ms + 500;
+      tempMs = this.state.widgets[index].valueArray[this.state.widgets[index].valueArray.length - 1].x + 500;
     }
 
     this.setState({
@@ -168,7 +169,7 @@ class newPage extends Component {
         ...this.state.widgets.slice(0, index),
         Object.assign({}, this.state.widgets[index], {
           value: value,
-          valueArray: [...this.state.widgets[parseInt(index)].valueArray, {ms: tempMs, val: value}]
+          valueArray: [...this.state.widgets[parseInt(index)].valueArray, {x: tempMs, y: value}]
         }),
         ...this.state.widgets.slice(index + 1)
       ]
