@@ -17,12 +17,12 @@ class Widget extends Component {
     if (this.refs['subscribe'].checked) {
       this.props.subscribe({contextId: this.props.id, machineId: this.refs['selectMachine'].value, varId: this.refs['bindValue'].value, tolleranceInterval: this.refs['tolleranceInterval'].value});
     } else {
-      this.props.readVariable({contextId: this.props.id, machineId: this.refs['selectMachine'].value, varId: this.refs['bindValue'].value, tolleranceInterval: this.refs['tolleranceInterval'].value})
+      if (this.props.value || this.props.value !== false) {
+        this.props.writeVariable({contextId: this.props.id, machineId: this.refs['selectMachine'].value, varId: this.refs['bindValue'].value, tolleranceInterval: this.refs['tolleranceInterval'].value, value: this.props.value})
+      } else {
+        this.props.readVariable({contextId: this.props.id, machineId: this.refs['selectMachine'].value, varId: this.refs['bindValue'].value, tolleranceInterval: this.refs['tolleranceInterval'].value})
+      }
     }
-
-    // if (this.props.value) {
-    //   this.props.write({})
-    // }
   }
 
   handleInputValueChange = (event) => {
