@@ -145,6 +145,36 @@ class newPage extends Component {
       })
   }
 
+  writeVariable = (obj) => {
+    axios.post('/rest/subscribe/write', Object.assign({}, obj, {session: window.sessionStorage.getItem("session")}))
+      .then((result) => {
+        let tempMs;
+        console.log('aa', this.state.widgets, obj)
+
+        if (this.state.widgets[obj.contextId].valueArray.length === 0) {
+          tempMs = 0;
+        } else {
+          tempMs = this.state.widgets[obj.contextId].valueArray[this.state.widgets[obj.contextId].valueArray.length - 1].x + 500;
+        }
+
+        console.log('ss');
+
+        this.setState({
+          widgets: [
+            ...this.state.widgets.slice(0, obj.contextId),
+            Object.assign({}, this.state.widgets[obj.contextId], {
+              value: result.data.readVarSetResult.VarValues.VarValue,
+              valueArray: [...this.state.widgets[obj.contextId].valueArray, {x: tempMs, y: result.data.readVarSetResult.VarValues.VarValue}]
+            }),
+            ...this.state.widgets.slice(obj.contextId + 1)
+          ]
+        })
+      })
+      .catch((e) => {
+        console.error('bb', e);
+      })
+  }
+
   handleInputChange = (event) => {
     const target = event.target;
     const value = target.value;
@@ -210,7 +240,7 @@ class newPage extends Component {
           {/* <pre>{JSON.stringify(this.state, false, 2)}</pre> */}
           {this.state.widgets.map((entry, key) => {
             return (
-              <Widget key={key} id={key} subscribe={this.subscribe} valueChange={this.handleValueChange} readVariable={this.readVariable} widgetType={entry.widgetType} names={this.state.names} nodes={this.state.nodes} value={entry.value} valueArray={entry.valueArray}/>
+              <Widget key={key} id={key} subscribe={this.subscribe} valueChange={this.handleValueChange} readVariable={this.readVariable} writeVariable={this.writeVariable} widgetType={entry.widgetType} names={this.state.names} nodes={this.state.nodes} value={entry.value} valueArray={entry.valueArray}/>
             )
           })
           }
