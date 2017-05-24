@@ -31,6 +31,7 @@ var testData = {
 
 module.exports = function(io) {
   io.on("connection", function(socket) {
+    console.log('connection');
     sockets[socket.id] = socket;
     var newInterval;
     var oldIntervalTollerance;
@@ -43,7 +44,7 @@ module.exports = function(io) {
           contextIds: [data.contextId]
         }
       } else {
-        users[socket.id].push(data.contextId);
+        users[socket.id].contextIds.push(data.contextId);
       }
 
       if (newInterval) {
