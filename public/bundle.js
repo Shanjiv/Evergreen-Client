@@ -29342,6 +29342,10 @@
 	
 	var _Widget2 = _interopRequireDefault(_Widget);
 	
+	var _asyncWaterfall = __webpack_require__(318);
+	
+	var _asyncWaterfall2 = _interopRequireDefault(_asyncWaterfall);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -29366,7 +29370,34 @@
 	    var _this = _possibleConstructorReturn(this, (newPage.__proto__ || Object.getPrototypeOf(newPage)).call(this, props));
 	
 	    _this.initialSubscribe = function () {
-	      _this.state.widgets();
+	      var tasks = [];
+	
+	      _this.state.widgets.map(function (entry) {
+	        if (entry.config.isSubscribe) {
+	          var task = function task(callback) {
+	            var obj = {
+	              contextId: entry.contextId,
+	              machineId: entry.config.machineId,
+	              varId: entry.config.varId,
+	              tolleranceInterval: entry.config.tolleranceInterval || 200
+	            };
+	
+	            _axios2.default.post('/rest/subscribe/create', Object.assign({}, obj, { session: window.sessionStorage.getItem("session") })).then(function (result) {
+	              socket.emit('subscribe', { contextId: entry.contextId, tolleranceInterval: parseInt(entry.config.tolleranceInterval || 200), session: window.sessionStorage.getItem("session") }, function () {
+	                console.log('emitted');
+	                callback();
+	              });
+	            }).catch(function (e) {
+	              console.error('bb', e);
+	            });
+	          };
+	          tasks.push(task);
+	        }
+	      });
+	
+	      (0, _asyncWaterfall2.default)(tasks, function () {
+	        console.log('done');
+	      });
 	    };
 	
 	    _this.findIndex = function (array, contextId) {
@@ -29542,6 +29573,8 @@
 	          _this2.setState({
 	            page: { Id: page.data.Id, Title: page.data.Title, CreatorId: page.data.CreatorId },
 	            widgets: page.data.ConfigXML
+	          }, function () {
+	            _this2.initialSubscribe();
 	          });
 	        }
 	      }).catch(function (err) {
@@ -51966,6 +51999,337 @@
 			URL.revokeObjectURL(oldSrc);
 	}
 
+
+/***/ }),
+/* 318 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(setImmediate, process) {'use strict';
+	
+	// MIT license (by Elan Shanker).
+	(function (globals) {
+	  'use strict';
+	
+	  var nextTick = function nextTick(fn) {
+	    if (typeof setImmediate === 'function') {
+	      setImmediate(fn);
+	    } else if (typeof process !== 'undefined' && process.nextTick) {
+	      process.nextTick(fn);
+	    } else {
+	      setTimeout(fn, 0);
+	    }
+	  };
+	
+	  var makeIterator = function makeIterator(tasks) {
+	    var makeCallback = function makeCallback(index) {
+	      var fn = function fn() {
+	        if (tasks.length) {
+	          tasks[index].apply(null, arguments);
+	        }
+	        return fn.next();
+	      };
+	      fn.next = function () {
+	        return index < tasks.length - 1 ? makeCallback(index + 1) : null;
+	      };
+	      return fn;
+	    };
+	    return makeCallback(0);
+	  };
+	
+	  var _isArray = Array.isArray || function (maybeArray) {
+	    return Object.prototype.toString.call(maybeArray) === '[object Array]';
+	  };
+	
+	  var waterfall = function waterfall(tasks, callback) {
+	    callback = callback || function () {};
+	    if (!_isArray(tasks)) {
+	      var err = new Error('First argument to waterfall must be an array of functions');
+	      return callback(err);
+	    }
+	    if (!tasks.length) {
+	      return callback();
+	    }
+	    var wrapIterator = function wrapIterator(iterator) {
+	      return function (err) {
+	        if (err) {
+	          callback.apply(null, arguments);
+	          callback = function callback() {};
+	        } else {
+	          var args = Array.prototype.slice.call(arguments, 1);
+	          var next = iterator.next();
+	          if (next) {
+	            args.push(wrapIterator(next));
+	          } else {
+	            args.push(callback);
+	          }
+	          nextTick(function () {
+	            iterator.apply(null, args);
+	          });
+	        }
+	      };
+	    };
+	    wrapIterator(makeIterator(tasks))();
+	  };
+	
+	  if (true) {
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
+	      return waterfall;
+	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)); // RequireJS
+	  } else if (typeof module !== 'undefined' && module.exports) {
+	    module.exports = waterfall; // CommonJS
+	  } else {
+	    globals.asyncWaterfall = waterfall; // <script>
+	  }
+	})(undefined);
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(319).setImmediate, __webpack_require__(10)))
+
+/***/ }),
+/* 319 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	var apply = Function.prototype.apply;
+	
+	// DOM APIs, for completeness
+	
+	exports.setTimeout = function () {
+	  return new Timeout(apply.call(setTimeout, window, arguments), clearTimeout);
+	};
+	exports.setInterval = function () {
+	  return new Timeout(apply.call(setInterval, window, arguments), clearInterval);
+	};
+	exports.clearTimeout = exports.clearInterval = function (timeout) {
+	  if (timeout) {
+	    timeout.close();
+	  }
+	};
+	
+	function Timeout(id, clearFn) {
+	  this._id = id;
+	  this._clearFn = clearFn;
+	}
+	Timeout.prototype.unref = Timeout.prototype.ref = function () {};
+	Timeout.prototype.close = function () {
+	  this._clearFn.call(window, this._id);
+	};
+	
+	// Does not start the time, just sets up the members needed.
+	exports.enroll = function (item, msecs) {
+	  clearTimeout(item._idleTimeoutId);
+	  item._idleTimeout = msecs;
+	};
+	
+	exports.unenroll = function (item) {
+	  clearTimeout(item._idleTimeoutId);
+	  item._idleTimeout = -1;
+	};
+	
+	exports._unrefActive = exports.active = function (item) {
+	  clearTimeout(item._idleTimeoutId);
+	
+	  var msecs = item._idleTimeout;
+	  if (msecs >= 0) {
+	    item._idleTimeoutId = setTimeout(function onTimeout() {
+	      if (item._onTimeout) item._onTimeout();
+	    }, msecs);
+	  }
+	};
+	
+	// setimmediate attaches itself to the global object
+	__webpack_require__(320);
+	exports.setImmediate = setImmediate;
+	exports.clearImmediate = clearImmediate;
+
+/***/ }),
+/* 320 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global, process) {"use strict";
+	
+	(function (global, undefined) {
+	    "use strict";
+	
+	    if (global.setImmediate) {
+	        return;
+	    }
+	
+	    var nextHandle = 1; // Spec says greater than zero
+	    var tasksByHandle = {};
+	    var currentlyRunningATask = false;
+	    var doc = global.document;
+	    var registerImmediate;
+	
+	    function setImmediate(callback) {
+	        // Callback can either be a function or a string
+	        if (typeof callback !== "function") {
+	            callback = new Function("" + callback);
+	        }
+	        // Copy function arguments
+	        var args = new Array(arguments.length - 1);
+	        for (var i = 0; i < args.length; i++) {
+	            args[i] = arguments[i + 1];
+	        }
+	        // Store and register the task
+	        var task = { callback: callback, args: args };
+	        tasksByHandle[nextHandle] = task;
+	        registerImmediate(nextHandle);
+	        return nextHandle++;
+	    }
+	
+	    function clearImmediate(handle) {
+	        delete tasksByHandle[handle];
+	    }
+	
+	    function run(task) {
+	        var callback = task.callback;
+	        var args = task.args;
+	        switch (args.length) {
+	            case 0:
+	                callback();
+	                break;
+	            case 1:
+	                callback(args[0]);
+	                break;
+	            case 2:
+	                callback(args[0], args[1]);
+	                break;
+	            case 3:
+	                callback(args[0], args[1], args[2]);
+	                break;
+	            default:
+	                callback.apply(undefined, args);
+	                break;
+	        }
+	    }
+	
+	    function runIfPresent(handle) {
+	        // From the spec: "Wait until any invocations of this algorithm started before this one have completed."
+	        // So if we're currently running a task, we'll need to delay this invocation.
+	        if (currentlyRunningATask) {
+	            // Delay by doing a setTimeout. setImmediate was tried instead, but in Firefox 7 it generated a
+	            // "too much recursion" error.
+	            setTimeout(runIfPresent, 0, handle);
+	        } else {
+	            var task = tasksByHandle[handle];
+	            if (task) {
+	                currentlyRunningATask = true;
+	                try {
+	                    run(task);
+	                } finally {
+	                    clearImmediate(handle);
+	                    currentlyRunningATask = false;
+	                }
+	            }
+	        }
+	    }
+	
+	    function installNextTickImplementation() {
+	        registerImmediate = function registerImmediate(handle) {
+	            process.nextTick(function () {
+	                runIfPresent(handle);
+	            });
+	        };
+	    }
+	
+	    function canUsePostMessage() {
+	        // The test against `importScripts` prevents this implementation from being installed inside a web worker,
+	        // where `global.postMessage` means something completely different and can't be used for this purpose.
+	        if (global.postMessage && !global.importScripts) {
+	            var postMessageIsAsynchronous = true;
+	            var oldOnMessage = global.onmessage;
+	            global.onmessage = function () {
+	                postMessageIsAsynchronous = false;
+	            };
+	            global.postMessage("", "*");
+	            global.onmessage = oldOnMessage;
+	            return postMessageIsAsynchronous;
+	        }
+	    }
+	
+	    function installPostMessageImplementation() {
+	        // Installs an event handler on `global` for the `message` event: see
+	        // * https://developer.mozilla.org/en/DOM/window.postMessage
+	        // * http://www.whatwg.org/specs/web-apps/current-work/multipage/comms.html#crossDocumentMessages
+	
+	        var messagePrefix = "setImmediate$" + Math.random() + "$";
+	        var onGlobalMessage = function onGlobalMessage(event) {
+	            if (event.source === global && typeof event.data === "string" && event.data.indexOf(messagePrefix) === 0) {
+	                runIfPresent(+event.data.slice(messagePrefix.length));
+	            }
+	        };
+	
+	        if (global.addEventListener) {
+	            global.addEventListener("message", onGlobalMessage, false);
+	        } else {
+	            global.attachEvent("onmessage", onGlobalMessage);
+	        }
+	
+	        registerImmediate = function registerImmediate(handle) {
+	            global.postMessage(messagePrefix + handle, "*");
+	        };
+	    }
+	
+	    function installMessageChannelImplementation() {
+	        var channel = new MessageChannel();
+	        channel.port1.onmessage = function (event) {
+	            var handle = event.data;
+	            runIfPresent(handle);
+	        };
+	
+	        registerImmediate = function registerImmediate(handle) {
+	            channel.port2.postMessage(handle);
+	        };
+	    }
+	
+	    function installReadyStateChangeImplementation() {
+	        var html = doc.documentElement;
+	        registerImmediate = function registerImmediate(handle) {
+	            // Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
+	            // into the document. Do so, thus queuing up the task. Remember to clean up once it's been called.
+	            var script = doc.createElement("script");
+	            script.onreadystatechange = function () {
+	                runIfPresent(handle);
+	                script.onreadystatechange = null;
+	                html.removeChild(script);
+	                script = null;
+	            };
+	            html.appendChild(script);
+	        };
+	    }
+	
+	    function installSetTimeoutImplementation() {
+	        registerImmediate = function registerImmediate(handle) {
+	            setTimeout(runIfPresent, 0, handle);
+	        };
+	    }
+	
+	    // If supported, we should attach to the prototype of global, since that is where setTimeout et al. live.
+	    var attachTo = Object.getPrototypeOf && Object.getPrototypeOf(global);
+	    attachTo = attachTo && attachTo.setTimeout ? attachTo : global;
+	
+	    // Don't get fooled by e.g. browserify environments.
+	    if ({}.toString.call(global.process) === "[object process]") {
+	        // For Node.js before 0.9
+	        installNextTickImplementation();
+	    } else if (canUsePostMessage()) {
+	        // For non-IE10 modern browsers
+	        installPostMessageImplementation();
+	    } else if (global.MessageChannel) {
+	        // For web workers, where supported
+	        installMessageChannelImplementation();
+	    } else if (doc && "onreadystatechange" in doc.createElement("script")) {
+	        // For IE 6–8
+	        installReadyStateChangeImplementation();
+	    } else {
+	        // For older browsers
+	        installSetTimeoutImplementation();
+	    }
+	
+	    attachTo.setImmediate = setImmediate;
+	    attachTo.clearImmediate = clearImmediate;
+	})(typeof self === "undefined" ? typeof global === "undefined" ? undefined : global : self);
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(10)))
 
 /***/ })
 /******/ ]);

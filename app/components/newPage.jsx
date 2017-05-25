@@ -3,6 +3,7 @@ import axios from 'axios';
 import Widget from './Widget';
 const io = require('socket.io-client');
 const socket = io();
+import AsyncWaterfall from 'async-waterfall';
 
 class newPage extends Component {
 
@@ -25,6 +26,8 @@ class newPage extends Component {
         this.setState({
           page: {Id: page.data.Id, Title: page.data.Title, CreatorId: page.data.CreatorId},
           widgets: page.data.ConfigXML
+        }, () => {
+          this.initialSubscribe();
         })
       }
 
@@ -107,7 +110,36 @@ class newPage extends Component {
   }
 
   initialSubscribe = () => {
-    this.state.widgets();
+    let tasks = [];
+
+    this.state.widgets.map((entry) => {
+      if (entry.config.isSubscribe) {
+        let task = (callback) => {
+          let obj = {
+            contextId: entry.contextId,
+            machineId: entry.config.machineId,
+            varId: entry.config.varId,
+            tolleranceInterval: entry.config.tolleranceInterval || 200
+          }
+
+          axios.post('/rest/subscribe/create', Object.assign({}, obj, {session: window.sessionStorage.getItem("session")}))
+            .then((result) => {
+              socket.emit('subscribe', {contextId: entry.contextId, tolleranceInterval: parseInt(entry.config.tolleranceInterval || 200), session: window.sessionStorage.getItem("session")}, () => {
+                console.log('emitted');
+                callback();
+              });
+            })
+            .catch((e) => {
+              console.error('bb', e);
+            })
+        }
+        tasks.push(task);
+      }
+    });
+
+    AsyncWaterfall(tasks, () => {
+      console.log('done');
+    })
   }
 
   findIndex = (array, contextId) => {
