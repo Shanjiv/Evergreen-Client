@@ -109,6 +109,11 @@ class newPage extends Component {
       })
   }
 
+  componentWillUnmount () {
+    socket.emit('disconnect_all');
+    socket.removeAllListeners("subscription_result");
+  }
+
   initialSubscribe = () => {
     let tasks = [];
 
@@ -124,10 +129,8 @@ class newPage extends Component {
 
           axios.post('/rest/subscribe/create', Object.assign({}, obj, {session: window.sessionStorage.getItem("session")}))
             .then((result) => {
-              socket.emit('subscribe', {contextId: entry.contextId, tolleranceInterval: parseInt(entry.config.tolleranceInterval || 200), session: window.sessionStorage.getItem("session")}, () => {
-                console.log('emitted');
-                callback();
-              });
+              socket.emit('subscribe', {contextId: entry.contextId, tolleranceInterval: parseInt(entry.config.tolleranceInterval || 200), session: window.sessionStorage.getItem("session")});
+              callback();
             })
             .catch((e) => {
               console.error('bb', e);

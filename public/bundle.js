@@ -29383,10 +29383,8 @@
 	            };
 	
 	            _axios2.default.post('/rest/subscribe/create', Object.assign({}, obj, { session: window.sessionStorage.getItem("session") })).then(function (result) {
-	              socket.emit('subscribe', { contextId: entry.contextId, tolleranceInterval: parseInt(entry.config.tolleranceInterval || 200), session: window.sessionStorage.getItem("session") }, function () {
-	                console.log('emitted');
-	                callback();
-	              });
+	              socket.emit('subscribe', { contextId: entry.contextId, tolleranceInterval: parseInt(entry.config.tolleranceInterval || 200), session: window.sessionStorage.getItem("session") });
+	              callback();
 	            }).catch(function (e) {
 	              console.error('bb', e);
 	            });
@@ -29641,6 +29639,12 @@
 	      }).catch(function (e) {
 	        console.error('bb', e);
 	      });
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      socket.emit('disconnect_all');
+	      socket.removeAllListeners("subscription_result");
 	    }
 	  }, {
 	    key: 'render',
