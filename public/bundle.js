@@ -29818,10 +29818,16 @@
 	      });
 	      if (this.refs['subscribe'].checked) {
 	        this.props.subscribe({ contextId: this.props.id, machineId: this.props.config.machineId, varId: this.props.config.varId, tolleranceInterval: this.props.config.tolleranceInterval });
-	      } else {
 	        if (this.props.widgetType === 'toggle') {
 	          var temp = !this.props.value || this.props.value === 'false' || this.props.value === '0' ? 'false' : 'true';
 	          this.props.writeVariable({ contextId: this.props.id, machineId: this.props.config.machineId, varId: this.props.config.varId, tolleranceInterval: this.props.config.tolleranceInterval, varValue: temp });
+	        } else if ((this.props.value || this.props.value !== false || this.props.value !== '0' || this.props.value !== 0) && this.props.widgetType === 'inputfield') {
+	          this.props.writeVariable({ contextId: this.props.id, machineId: this.props.config.machineId, varId: this.props.config.varId, tolleranceInterval: this.props.config.tolleranceInterval, varValue: this.props.value });
+	        }
+	      } else {
+	        if (this.props.widgetType === 'toggle') {
+	          var _temp = !this.props.value || this.props.value === 'false' || this.props.value === '0' ? 'false' : 'true';
+	          this.props.writeVariable({ contextId: this.props.id, machineId: this.props.config.machineId, varId: this.props.config.varId, tolleranceInterval: this.props.config.tolleranceInterval, varValue: _temp });
 	        } else if ((this.props.value || this.props.value !== false || this.props.value !== '0' || this.props.value !== 0) && this.props.widgetType === 'inputfield') {
 	          this.props.writeVariable({ contextId: this.props.id, machineId: this.props.config.machineId, varId: this.props.config.varId, tolleranceInterval: this.props.config.tolleranceInterval, varValue: this.props.value });
 	        } else {
