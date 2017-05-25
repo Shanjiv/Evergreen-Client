@@ -17,7 +17,7 @@ class Widget extends Component {
     this.setState({configureFlag: false}, () => {
       this.props.pageUpdate();
     });
-    if (this.refs['subscribe'].checked) {
+    if (this.props.config.isSubscribe) {
       this.props.subscribe({contextId: this.props.id, machineId: this.props.config.machineId, varId: this.props.config.varId, tolleranceInterval: this.props.config.tolleranceInterval});
       if (this.props.widgetType === 'toggle') {
         let temp = (!this.props.value || this.props.value === 'false' || this.props.value === '0') ? 'false' : 'true';
@@ -37,12 +37,25 @@ class Widget extends Component {
     }
   }
 
+  handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      if (this.props.config.machineId && this.props.config.varId) {
+        this.setWidgetHandle();
+      }
+    }
+  }
+
   handleInputValueChange = (event) => {
     this.props.valueChange(event.target.value, this.props.id);
   }
 
   handleCheckValueChange = (event) => {
     this.props.valueChange(event.target.checked, this.props.id)
+    setTimeout(() => {
+      if (this.props.config.machineId && this.props.config.varId) {
+        this.setWidgetHandle();
+      }
+    }, 200)
   }
 
   handleConfigValueChange = (event) => {
@@ -124,7 +137,7 @@ class Widget extends Component {
               <div className="WidgetButton">
                 Inputfield
               </div>
-              <input type="search" value={this.props.value} onChange={this.handleInputValueChange} placeholder="Value"/>
+              <input type="search" value={this.props.value} onChange={this.handleInputValueChange} onKeyPress={this.handleKeyPress} placeholder="Value"/>
             </div>
           }
           {this.props.widgetType === 'outputfield' &&

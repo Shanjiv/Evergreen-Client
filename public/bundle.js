@@ -29800,12 +29800,25 @@
 	
 	    var _this = _possibleConstructorReturn(this, (Widget.__proto__ || Object.getPrototypeOf(Widget)).call(this, props));
 	
+	    _this.handleKeyPress = function (event) {
+	      if (event.key === 'Enter') {
+	        if (_this.props.config.machineId && _this.props.config.varId) {
+	          _this.setWidgetHandle();
+	        }
+	      }
+	    };
+	
 	    _this.handleInputValueChange = function (event) {
 	      _this.props.valueChange(event.target.value, _this.props.id);
 	    };
 	
 	    _this.handleCheckValueChange = function (event) {
 	      _this.props.valueChange(event.target.checked, _this.props.id);
+	      setTimeout(function () {
+	        if (_this.props.config.machineId && _this.props.config.varId) {
+	          _this.setWidgetHandle();
+	        }
+	      }, 200);
 	    };
 	
 	    _this.handleConfigValueChange = function (event) {
@@ -29849,7 +29862,7 @@
 	      this.setState({ configureFlag: false }, function () {
 	        _this2.props.pageUpdate();
 	      });
-	      if (this.refs['subscribe'].checked) {
+	      if (this.props.config.isSubscribe) {
 	        this.props.subscribe({ contextId: this.props.id, machineId: this.props.config.machineId, varId: this.props.config.varId, tolleranceInterval: this.props.config.tolleranceInterval });
 	        if (this.props.widgetType === 'toggle') {
 	          var temp = !this.props.value || this.props.value === 'false' || this.props.value === '0' ? 'false' : 'true';
@@ -29956,7 +29969,7 @@
 	              { className: 'WidgetButton' },
 	              'Inputfield'
 	            ),
-	            _react2.default.createElement('input', { type: 'search', value: this.props.value, onChange: this.handleInputValueChange, placeholder: 'Value' })
+	            _react2.default.createElement('input', { type: 'search', value: this.props.value, onChange: this.handleInputValueChange, onKeyPress: this.handleKeyPress, placeholder: 'Value' })
 	          ),
 	          this.props.widgetType === 'outputfield' && _react2.default.createElement(
 	            'div',
@@ -42437,8 +42450,8 @@
 	    tickFormats: {
 	      top: Epoch.Formats.regular,
 	      bottom: Epoch.Formats.regular,
-	      left: Epoch.Formats.si,
-	      right: Epoch.Formats.si
+	      left: Epoch.Formats.regular,
+	      right: Epoch.Formats.regular
 	    }
 	  };
 	
@@ -42744,8 +42757,8 @@
 	
 	  horizontal_specific = {
 	    tickFormats: {
-	      top: Epoch.Formats.si,
-	      bottom: Epoch.Formats.si,
+	      top: Epoch.Formats.regular,
+	      bottom: Epoch.Formats.regular,
 	      left: Epoch.Formats.regular,
 	      right: Epoch.Formats.regular
 	    }
@@ -43381,8 +43394,8 @@
 	    tickFormats: {
 	      top: Epoch.Formats.seconds,
 	      bottom: Epoch.Formats.seconds,
-	      left: Epoch.Formats.si,
-	      right: Epoch.Formats.si
+	      left: Epoch.Formats.regular,
+	      right: Epoch.Formats.regular
 	    }
 	  };
 	
