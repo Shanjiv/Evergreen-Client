@@ -14,11 +14,14 @@ class newPage extends Component {
       nodes: [],
       widgets: [],
       widgetselect: 'graph',
-      page: {}
+      page: {},
+      username: ''
     }
   }
 
   componentDidMount() {
+
+    this.setState({username: window.sessionStorage.getItem("username")})
 
     axios.post('/rest/page/get', {session: window.sessionStorage.getItem("session"), page: this.props.params.pageId}).then((page) => {
 
@@ -340,6 +343,15 @@ class newPage extends Component {
               <span>Ever</span>
               Green
             </a>
+            <div style={{
+                marginLeft: '25px',
+                color: '#ffffff',
+                fontSize: '24px',
+                whiteSpace: 'nowrap',
+                float: 'left',
+                lineHeight: '60px'}}>
+              <span>{this.state.username}</span>
+            </div>
             <div className="logoutWrapper">
               <a href onClick={this.logoutHandler}>Logout</a>
             </div>

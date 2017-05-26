@@ -20087,6 +20087,7 @@
 	          username: _this.state.username,
 	          password: _this.state.password
 	        }).then(function (result) {
+	          window.sessionStorage.setItem("username", _this.state.username);
 	          _this.setState({ username: '', password: '', errorFlag: '' });
 	
 	          console.log('@@!!', result);
@@ -22834,31 +22835,30 @@
 	var Home_Nav = function (_Component) {
 	  _inherits(Home_Nav, _Component);
 	
-	  function Home_Nav() {
-	    var _ref;
-	
-	    var _temp, _this, _ret;
-	
+	  function Home_Nav(props) {
 	    _classCallCheck(this, Home_Nav);
 	
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
+	    var _this = _possibleConstructorReturn(this, (Home_Nav.__proto__ || Object.getPrototypeOf(Home_Nav)).call(this, props));
 	
-	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Home_Nav.__proto__ || Object.getPrototypeOf(Home_Nav)).call.apply(_ref, [this].concat(args))), _this), _this.logoutHandler = function () {
-	      console.log('clicked logout!');
-	
+	    _this.logoutHandler = function () {
 	      _axios2.default.post('/rest/auth/logout', { session: window.sessionStorage.getItem("session") }).then(function (result) {
 	        window.sessionStorage.setItem("session", "");
 	        window.sessionStorage.setItem("sessionType", "");
 	        _this.props.router.push('/');
 	      }).catch(function (e) {});
-	    }, _temp), _possibleConstructorReturn(_this, _ret);
+	    };
+	
+	    _this.state = {
+	      username: ''
+	    };
+	    return _this;
 	  }
 	
 	  _createClass(Home_Nav, [{
 	    key: 'componentDidMount',
-	    value: function componentDidMount() {}
+	    value: function componentDidMount() {
+	      this.setState({ username: window.sessionStorage.getItem("username") });
+	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
@@ -22879,6 +22879,21 @@
 	              'Ever'
 	            ),
 	            'Green'
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { style: {
+	                marginLeft: '25px',
+	                color: '#ffffff',
+	                fontSize: '24px',
+	                whiteSpace: 'nowrap',
+	                float: 'left',
+	                lineHeight: '60px' } },
+	            _react2.default.createElement(
+	              'span',
+	              null,
+	              this.state.username
+	            )
 	          ),
 	          _react2.default.createElement(
 	            'div',
@@ -29184,7 +29199,8 @@
 	      nodes: [],
 	      widgets: [],
 	      widgetselect: 'graph',
-	      page: {}
+	      page: {},
+	      username: ''
 	    };
 	    return _this;
 	  }
@@ -29193,6 +29209,8 @@
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
 	      var _this2 = this;
+	
+	      this.setState({ username: window.sessionStorage.getItem("username") });
 	
 	      _axios2.default.post('/rest/page/get', { session: window.sessionStorage.getItem("session"), page: this.props.params.pageId }).then(function (page) {
 	
@@ -29297,6 +29315,21 @@
 	                'Ever'
 	              ),
 	              'Green'
+	            ),
+	            _react2.default.createElement(
+	              'div',
+	              { style: {
+	                  marginLeft: '25px',
+	                  color: '#ffffff',
+	                  fontSize: '24px',
+	                  whiteSpace: 'nowrap',
+	                  float: 'left',
+	                  lineHeight: '60px' } },
+	              _react2.default.createElement(
+	                'span',
+	                null,
+	                this.state.username
+	              )
 	            ),
 	            _react2.default.createElement(
 	              'div',

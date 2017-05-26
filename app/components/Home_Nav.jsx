@@ -4,11 +4,18 @@ import {browserHistory} from 'react-router';
 
 class Home_Nav extends Component {
 
-  componentDidMount() {}
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: '',
+    };
+  }
+
+  componentDidMount() {
+    this.setState({username: window.sessionStorage.getItem("username")})
+  }
 
   logoutHandler = () => {
-    console.log('clicked logout!');
-
     axios.post('/rest/auth/logout', {session: window.sessionStorage.getItem("session")}).then((result) => {
       window.sessionStorage.setItem("session", "");
       window.sessionStorage.setItem("sessionType", "");
@@ -24,6 +31,15 @@ class Home_Nav extends Component {
             <span>Ever</span>
             Green
           </a>
+          <div style={{
+              marginLeft: '25px',
+              color: '#ffffff',
+              fontSize: '24px',
+              whiteSpace: 'nowrap',
+              float: 'left',
+              lineHeight: '60px'}}>
+            <span>{this.state.username}</span>
+          </div>
           <div className="logoutWrapper">
             <a href onClick={this.logoutHandler}>Logout</a>
           </div>
