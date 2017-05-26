@@ -11,11 +11,6 @@
     <port>18083</port>
   </server>
   <server>
-    <serverName>EvergreenWebService</serverName>
-    <serverAdress>http://192.168.2.155</serverAdress>
-    <port>18083</port>
-  </server>
-  <server>
     <serverName>test</serverName>
     <serverAdress>http://123.2123.213</serverAdress>
     <port>8080</port>
@@ -34,5 +29,10 @@
     <serverName>aaaa</serverName>
     <serverAdress>http://192.168.56.102</serverAdress>
     <port>18083</port>
+  </server>
+  <server>
+    <serverName>qweqwe</serverName>
+    <serverAdress>http://192.12.12.1</serverAdress>
+    <port>12</port>
   </server>
 </serverlist>
