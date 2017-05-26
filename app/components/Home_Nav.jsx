@@ -20,7 +20,7 @@ class Home_Nav extends Component {
     return (
       <page-top>
         <div className="page-top clearfix">
-          <a href className="al-logo clearfix">
+          <a href="/" className="al-logo clearfix">
             <span>Ever</span>
             Green
           </a>

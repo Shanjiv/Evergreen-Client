@@ -36,7 +36,6 @@ class newPage extends Component {
     })
 
     socket.on('subscription_result', (socketData) => {
-
       if (socketData.response.notifications && Object.prototype.toString.call( socketData.response.notifications.UserNotifications ) === '[object Object]') {
         // if (parseInt(socketData.response.notifications.UserNotifications.ContextId) <= this.state.widgets.length - 1) {
         let index = this.findIndex(this.state.widgets, socketData.response.notifications.UserNotifications.ContextId)
@@ -337,7 +336,7 @@ class newPage extends Component {
       <main>
         <page-top>
           <div className="page-top clearfix">
-            <a href className="al-logo clearfix">
+            <a href="/" className="al-logo clearfix">
               <span>Ever</span>
               Green
             </a>
@@ -364,7 +363,7 @@ class newPage extends Component {
           <div className="al-content">
             <content-top>
               <div className="content-top clearfix">
-                <h1 className="al-title ng-binding">New Page</h1>
+                <h1 className="al-title ng-binding">{this.state.page.Title}</h1>
               </div>
             </content-top>
             <div>
