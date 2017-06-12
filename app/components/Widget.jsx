@@ -83,9 +83,8 @@ class Widget extends Component {
 
   render() {
     return (
-      <div className="col-lg-4 col-md-6">
-        <div>
-          <div className="panel panel-blur animated">
+        <div style={{height: '100%'}}>
+          <div className="panel panel-blur animated with-scroll panel-widget">
             <div className="panel-heading clearfix">
               <div className="col-sm-6" style={{padding: 0}}>
                 {this.state.renameFlag
@@ -205,7 +204,6 @@ class Widget extends Component {
             </div>
           </div>
         </div>
-      </div>
     );
     // return (
     //   <ul className="list-group widget-group">

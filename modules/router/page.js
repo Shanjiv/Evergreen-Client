@@ -191,13 +191,19 @@ module.exports = {
               try {
                 tempData.ConfigXML = JSON.parse(tempData.ConfigXML);
                 if (!tempData.ConfigXML) {
-                  tempData.ConfigXML = [];
+                  tempData.widgets = [];
+                  tempData.layouts = [];
+                } else {
+                  tempData.widgets = tempData.ConfigXML.widgets;
+                  tempData.layouts = tempData.ConfigXML.layouts;
                 }
               } catch (e) {
-                tempData.ConfigXML = [];
+                tempData.widgets = [];
+                tempData.layouts = [];
               }
             } else {
-              tempData.ConfigXML = [];
+              tempData.widgets = [];
+              tempData.layouts = [];
             }
 
             res.send(tempData);

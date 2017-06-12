@@ -4,6 +4,9 @@ import Widget from './Widget';
 const io = require('socket.io-client');
 const socket = io();
 import AsyncWaterfall from 'async-waterfall';
+import { Responsive, WidthProvider } from 'react-grid-layout';
+const ResponsiveReactGridLayout = WidthProvider(Responsive);
+import _ from 'lodash';
 
 class newPage extends Component {
 
@@ -15,7 +18,22 @@ class newPage extends Component {
       widgets: [],
       widgetselect: 'graph',
       page: {},
-      username: ''
+      username: '',
+      layouts: {},
+      breakpoint: '',
+      grid: {
+        x: 0,
+        y: 0,
+        w: 1,
+        h: 15,
+        minW: 1,
+        maxW: 1000,
+        minH: 7,
+        maxH: 1000,
+        static: false,
+        isDraggable: true,
+        isResizable: true
+      }
     }
   }
 
@@ -28,7 +46,8 @@ class newPage extends Component {
       if (page.data.Id) {
         this.setState({
           page: {Id: page.data.Id, Title: page.data.Title, CreatorId: page.data.CreatorId},
-          widgets: page.data.ConfigXML
+          widgets: page.data.widgets,
+          layouts: page.data.layouts
         }, () => {
           this.initialSubscribe();
         })
@@ -116,6 +135,46 @@ class newPage extends Component {
     socket.removeAllListeners("subscription_result");
   }
 
+  onLayoutChange = (layout, layouts) => {
+    // console.log('aaaa');
+    // let tempArray = [];
+    //
+    // layout.map((entry, key) => {
+    //   if (entry.minH === undefined) {
+    //     tempArray.push(key);
+    //   }
+    // });
+    //
+    // if (tempArray.length) {
+    //
+    //   let tempObject = {};
+    //   tempObject[this.state.breakpoint] = [];
+    //
+    //   layouts[this.state.breakpoint].map((entry) => {
+    //     if (entry.minH === undefined) {
+    //       entry.h = 15;
+    //       entry.minH = 7;
+    //     }
+    //
+    //     tempObject[this.state.breakpoint].push(entry);
+    //   })
+    //   // console.log('aaaa',  Object.assign({}, layouts, tempObject));
+    //
+    //   this.setState({
+    //     layouts: Object.assign({}, layouts, tempObject)
+    //   })
+    // }
+
+    this.setState({layouts: layouts}, () => {
+      this.pageUpdate();
+      console.log('aa', layouts)
+    });
+  }
+
+  onBreakpointChange = (newBreakpoint, newCols) => {
+    this.setState({breakpoint: newBreakpoint});
+  }
+
   initialSubscribe = () => {
     let tasks = [];
 
@@ -181,7 +240,8 @@ class newPage extends Component {
   }
 
   pageUpdate = () => {
-    let tempString = window.btoa(JSON.stringify(this.state.widgets));
+    let tempString = window.btoa(JSON.stringify({widgets: this.state.widgets, layouts: this.state.layouts}));
+    // let tempString = window.btoa(JSON.stringify(this.state.widgets));
 
     axios.post('/rest/page/update', {session: window.sessionStorage.getItem("session"), page: {Id: this.props.params.pageId, CreatorId: this.state.page.CreatorId, Title: this.state.page.Title, ConfigXML: tempString}})
       .then((result) => {
@@ -380,7 +440,44 @@ class newPage extends Component {
             </content-top>
             <div>
               <div className="widgets">
-                <div className="row">
+                {/* <pre>
+                  {JSON.stringify(this.state, false, 2)}
+                </pre> */}
+                <ResponsiveReactGridLayout className="layout" layouts={this.state.layouts}
+                  breakpoints={{lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0}}
+                  useCSSTransforms={true}
+                  onLayoutChange={this.onLayoutChange}
+                  onBreakpointChange={this.onBreakpointChange}
+                  rowHeight={30}
+                  autoSize={true}
+                  cols={{lg: 3, md: 3, sm: 2, xs: 1, xxs: 1}}>
+                  {this.state.widgets && this.state.widgets.map((entry, key) => {
+                    return (
+                      <div key={entry.contextId} data-grid={this.state.grid}>
+                        <Widget
+                          key={entry.contextId}
+                          id={entry.contextId}
+                          keyindex={key}
+                          subscribe={this.subscribe}
+                          valueChange={this.handleValueChange}
+                          readVariable={this.readVariable}
+                          writeVariable={this.writeVariable}
+                          widgetType={entry.widgetType}
+                          names={this.state.names}
+                          nodes={this.state.nodes}
+                          value={entry.value}
+                          config={entry.config}
+                          setConfig={this.setConfig}
+                          pageUpdate={this.pageUpdate}
+                          delete={this.deletePage}
+                          setTitle={this.setTitle}
+                          title={entry.title}
+                        />
+                      </div>
+                    )
+                  })}
+                </ResponsiveReactGridLayout>
+                {/* <div className="row">
                   {this.state.widgets && this.state.widgets.map((entry, key) => {
                     return (
                       <Widget
@@ -404,7 +501,7 @@ class newPage extends Component {
                       />
                     )
                   })}
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

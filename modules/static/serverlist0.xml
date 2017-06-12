@@ -35,4 +35,9 @@
     <serverAdress>http://192.12.12.1</serverAdress>
     <port>12</port>
   </server>
+  <server>
+    <serverName>qqqqqqqqq</serverName>
+    <serverAdress>http://192.168.56.101</serverAdress>
+    <port>18083</port>
+  </server>
 </serverlist>

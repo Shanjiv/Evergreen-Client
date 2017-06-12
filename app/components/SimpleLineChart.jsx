@@ -34,7 +34,7 @@ class SimpleLineChart extends Component {
     this.myInterval = setInterval(() => {
       this.plot.setData([this.data])
       this.plot.setupGrid();
-
+      this.plot.resize();
       this.plot.draw();
     }, 100)
   }
