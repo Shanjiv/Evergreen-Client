@@ -1644,6 +1644,25 @@ div#_canvas_css_reference svg { position: absolute; width: 0; height: 0; top: -1
 @media (min-width:320px)  { /* smartphones, iPhone, portrait 480x320 phones */ }
 @media (min-width:481px)  { /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */ }
 @media (max-width: 768px)  {
+
+	.logoutWrapper {
+		float: right;
+		margin-left: 0;
+	}
+
+	a.al-logo {
+		font-size: 20px;
+	}
+
+	.left-button {
+		margin-right: 7px;
+	}
+
+	.user-name {
+		margin-left: 6px !important;
+		font-size: 20px !important;
+	}
+
 	.grid-sizer,
 	.grid-item { width: 100%; }
 

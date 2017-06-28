@@ -455,7 +455,7 @@ class newPage extends Component {
               <span>Ever</span>
               Green
             </a>
-            <div style={{
+            <div className="user-name" style={{
                 marginLeft: '25px',
                 color: '#ffffff',
                 fontSize: '24px',
