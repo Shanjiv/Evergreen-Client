@@ -363,7 +363,13 @@ class Home extends Component {
                               <div className="add-row-editable-table">
                                 {/* <div className="col-md-6"> */}
                                   <div className="input-group">
-                                    <input type="text" ref={`pageCreateInput${index}`}  className="form-control" placeholder="Sitename"/>
+                                    <input type="text" ref={`pageCreateInput${index}`}  className="form-control" placeholder="Sitename" onKeyPress={
+                                            (event) => {
+                                              if (event.key == 'Enter') {
+                                                this.pageCreateHandler(index);
+                                              }
+                                            }
+                                    }/>
                                     <span className="input-group-btn">
                                       <button className="btn btn-primary stand-still" onClick={() => this.pageCreateHandler(index)} type="button">Add new site</button>
                                     </span>

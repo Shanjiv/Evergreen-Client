@@ -192,18 +192,35 @@ module.exports = {
                 tempData.ConfigXML = JSON.parse(tempData.ConfigXML);
                 if (!tempData.ConfigXML) {
                   tempData.widgets = [];
-                  tempData.layouts = [];
+                  tempData.order = [];
                 } else {
                   tempData.widgets = tempData.ConfigXML.widgets;
-                  tempData.layouts = tempData.ConfigXML.layouts;
+                  tempData.order = tempData.ConfigXML.order;
                 }
               } catch (e) {
                 tempData.widgets = [];
-                tempData.layouts = [];
+                tempData.order = [];
               }
             } else {
               tempData.widgets = [];
-              tempData.layouts = [];
+              tempData.order = [];
+            }
+
+            if (tempData.order.length) {
+              let result = [];
+              let items = JSON.parse(JSON.stringify(tempData.widgets));
+              tempData.order.forEach(function (key) {
+                var found = false;
+                items = items.filter(function (item) {
+                  if (!found && item.contextId == key) {
+                    result.push(item);
+                    found = true;
+                    return false;
+                  } else
+                    return true;
+                })
+              })
+              tempData.widgets = result;
             }
 
             res.send(tempData);

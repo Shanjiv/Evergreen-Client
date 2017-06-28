@@ -83,7 +83,7 @@ class Widget extends Component {
 
   render() {
     return (
-        <div style={{height: '100%'}}>
+        <div data-gridkey={this.props.id} className="grid-item">
           <div className="panel panel-blur animated with-scroll panel-widget">
             <div className="panel-heading clearfix">
               <div className="col-sm-6" style={{padding: 0}}>
@@ -143,7 +143,7 @@ class Widget extends Component {
               }
               <hr/>
               {!this.state.configureFlag &&
-                <button className="btn btn-primary button-with-icon" onClick={()=>{this.setState({configureFlag: true})}}>
+                <button className="btn btn-primary button-with-icon" onClick={()=>{this.props.gridLayout(); this.setState({configureFlag: true})}}>
                   {/* <i className="glyphicon glyphicon-plus"></i> */}
                   Configure Widget
                 </button>

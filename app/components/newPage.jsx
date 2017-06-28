@@ -4,9 +4,12 @@ import Widget from './Widget';
 const io = require('socket.io-client');
 const socket = io();
 import AsyncWaterfall from 'async-waterfall';
-import { Responsive, WidthProvider } from 'react-grid-layout';
-const ResponsiveReactGridLayout = WidthProvider(Responsive);
+// import { Responsive, WidthProvider } from 'react-grid-layout';
+// const ResponsiveReactGridLayout = WidthProvider(Responsive);
 import _ from 'lodash';
+require('./packery');
+import Draggabilly from './draggabilly';
+const isMobile = window.innerWidth <= 768;
 
 class newPage extends Component {
 
@@ -19,25 +22,47 @@ class newPage extends Component {
       widgetselect: 'graph',
       page: {},
       username: '',
-      layouts: {},
-      breakpoint: '',
-      grid: {
-        x: 0,
-        y: 0,
-        w: 1,
-        h: 15,
-        minW: 1,
-        maxW: 1000,
-        minH: 7,
-        maxH: 1000,
-        static: false,
-        isDraggable: true,
-        isResizable: true
-      }
+      order: []
     }
   }
 
   componentDidMount() {
+
+    // let elem = document.querySelector('.grid');
+    // let pckry = new Packery( elem, {
+    //   // options
+    //   itemSelector: '.grid-item',
+    //   gutter: 20,
+    //   percentPosition: true
+    // });
+
+    setTimeout(() => {
+
+      this.grid = $('.grid').packery({
+        itemSelector: '.grid-item',
+        columnWidth: '.grid-sizer',
+        gutter: '.gutter-sizer',
+        percentPosition: true
+      });
+
+      if (!isMobile) {
+        this.grid.find('.grid-item').each( ( i, gridItem ) => {
+          let draggie = new Draggabilly( gridItem );
+          // bind drag events to Packery
+          this.grid.packery( 'bindDraggabillyEvents', draggie );
+        });
+        let tArray = []
+
+        this.grid.on( 'dragItemPositioned', ( event, draggedItem ) => {
+          this.grid.packery('getItemElements').forEach((entry) => {
+            tArray.push(parseInt($(entry).attr("data-gridkey")));
+          })
+          this.setState({order: tArray}, () => {
+            this.pageUpdate(true);
+          });
+        })
+      }
+    }, 1000)
 
     this.setState({username: window.sessionStorage.getItem("username")})
 
@@ -46,8 +71,7 @@ class newPage extends Component {
       if (page.data.Id) {
         this.setState({
           page: {Id: page.data.Id, Title: page.data.Title, CreatorId: page.data.CreatorId},
-          widgets: page.data.widgets,
-          layouts: page.data.layouts
+          widgets: page.data.widgets
         }, () => {
           this.initialSubscribe();
         })
@@ -135,45 +159,44 @@ class newPage extends Component {
     socket.removeAllListeners("subscription_result");
   }
 
-  onLayoutChange = (layout, layouts) => {
-    // console.log('aaaa');
-    // let tempArray = [];
-    //
-    // layout.map((entry, key) => {
-    //   if (entry.minH === undefined) {
-    //     tempArray.push(key);
-    //   }
-    // });
-    //
-    // if (tempArray.length) {
-    //
-    //   let tempObject = {};
-    //   tempObject[this.state.breakpoint] = [];
-    //
-    //   layouts[this.state.breakpoint].map((entry) => {
-    //     if (entry.minH === undefined) {
-    //       entry.h = 15;
-    //       entry.minH = 7;
-    //     }
-    //
-    //     tempObject[this.state.breakpoint].push(entry);
-    //   })
-    //   // console.log('aaaa',  Object.assign({}, layouts, tempObject));
-    //
-    //   this.setState({
-    //     layouts: Object.assign({}, layouts, tempObject)
-    //   })
-    // }
+  // onLayoutChange = (layout, layouts) => {
+  //   // console.log('aaaa');
+  //   // let tempArray = [];
+  //   //
+  //   // layout.map((entry, key) => {
+  //   //   if (entry.minH === undefined) {
+  //   //     tempArray.push(key);
+  //   //   }
+  //   // });
+  //   //
+  //   // if (tempArray.length) {
+  //   //
+  //   //   let tempObject = {};
+  //   //   tempObject[this.state.breakpoint] = [];
+  //   //
+  //   //   layouts[this.state.breakpoint].map((entry) => {
+  //   //     if (entry.minH === undefined) {
+  //   //       entry.h = 15;
+  //   //       entry.minH = 7;
+  //   //     }
+  //   //
+  //   //     tempObject[this.state.breakpoint].push(entry);
+  //   //   })
+  //   //   // console.log('aaaa',  Object.assign({}, layouts, tempObject));
+  //   //
+  //   //   this.setState({
+  //   //     layouts: Object.assign({}, layouts, tempObject)
+  //   //   })
+  //   // }
+  //
+  //   this.setState({layouts: layouts}, () => {
+  //     this.pageUpdate();
+  //   });
+  // }
 
-    this.setState({layouts: layouts}, () => {
-      this.pageUpdate();
-      console.log('aa', layouts)
-    });
-  }
-
-  onBreakpointChange = (newBreakpoint, newCols) => {
-    this.setState({breakpoint: newBreakpoint});
-  }
+  // onBreakpointChange = (newBreakpoint, newCols) => {
+  //   this.setState({breakpoint: newBreakpoint});
+  // }
 
   initialSubscribe = () => {
     let tasks = [];
@@ -236,12 +259,24 @@ class newPage extends Component {
       widgets: [...this.state.widgets, {contextId: tempIndex, widgetType: this.state.widgetselect, value: '', config: {machineId: '', varId: '', tolleranceInterval: '', isSubscribe: false}, name: ''}]
     }, () => {
       this.pageUpdate();
+      if (!isMobile) {
+        this.grid.find('.grid-item').each( ( i, gridItem ) => {
+          if (i === this.grid.find('.grid-item').length - 1) {
+            let draggie = new Draggabilly( gridItem );
+            // bind drag events to Packery
+            this.grid.packery( 'bindDraggabillyEvents', draggie );
+          }
+        });
+      }
     })
   }
 
-  pageUpdate = () => {
-    let tempString = window.btoa(JSON.stringify({widgets: this.state.widgets, layouts: this.state.layouts}));
+  pageUpdate = (flag) => {
+    let tempString = window.btoa(JSON.stringify({widgets: this.state.widgets, order: this.state.order}));
     // let tempString = window.btoa(JSON.stringify(this.state.widgets));
+    if (!flag) {
+      this.gridLayout();
+    }
 
     axios.post('/rest/page/update', {session: window.sessionStorage.getItem("session"), page: {Id: this.props.params.pageId, CreatorId: this.state.page.CreatorId, Title: this.state.page.Title, ConfigXML: tempString}})
       .then((result) => {
@@ -250,6 +285,13 @@ class newPage extends Component {
       .catch((e) => {
         console.error('cc', e);
       })
+  }
+
+  gridLayout = () => {
+    setTimeout(() => {
+      this.grid.packery('reloadItems')
+      this.grid.packery('layout');
+    }, 10)
   }
 
   subscribe = (obj) => {
@@ -390,8 +432,12 @@ class newPage extends Component {
     axios.post('/rest/auth/logout', {session: window.sessionStorage.getItem("session")}).then((result) => {
       window.sessionStorage.setItem("session", "");
       window.sessionStorage.setItem("sessionType", "");
-      this.context.router.push('/')
+      this.context.router.push('#')
     }).catch((e) => {})
+  }
+
+  backHandler = () => {
+    history.back();
   }
 
   render() {
@@ -399,6 +445,11 @@ class newPage extends Component {
       <main>
         <page-top>
           <div className="page-top clearfix">
+            <div className="left-button" onClick={this.backHandler}>
+              <span className="button-wrapper">
+                <i className="glyphicon glyphicon-menu-left"></i>
+              </span>
+            </div>
             <a href="/" className="al-logo clearfix">
               <span>Ever</span>
               Green
@@ -443,12 +494,12 @@ class newPage extends Component {
                 {/* <pre>
                   {JSON.stringify(this.state, false, 2)}
                 </pre> */}
-                <ResponsiveReactGridLayout className="layout" layouts={this.state.layouts}
+                {/* <ResponsiveReactGridLayout className="layout" layouts={this.state.layouts}
                   breakpoints={{lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0}}
                   useCSSTransforms={true}
                   onLayoutChange={this.onLayoutChange}
                   onBreakpointChange={this.onBreakpointChange}
-                  rowHeight={30}
+                  rowHeight={5}
                   autoSize={true}
                   cols={{lg: 3, md: 3, sm: 2, xs: 1, xxs: 1}}>
                   {this.state.widgets && this.state.widgets.map((entry, key) => {
@@ -476,10 +527,15 @@ class newPage extends Component {
                       </div>
                     )
                   })}
-                </ResponsiveReactGridLayout>
-                {/* <div className="row">
+                </ResponsiveReactGridLayout> */}
+                <div className="grid">
+                  <div className="grid-sizer"></div>
+                  <div className="gutter-sizer"></div>
                   {this.state.widgets && this.state.widgets.map((entry, key) => {
                     return (
+                      // <div key={key} className="grid-item">
+                      //   <div style={{height: '50px', backgroundColor: '#ccc'}}></div>
+                      // </div>
                       <Widget
                         key={entry.contextId}
                         id={entry.contextId}
@@ -498,10 +554,11 @@ class newPage extends Component {
                         delete={this.deletePage}
                         setTitle={this.setTitle}
                         title={entry.title}
+                        gridLayout={this.gridLayout}
                       />
                     )
                   })}
-                </div> */}
+                </div>
               </div>
             </div>
           </div>
