@@ -18,7 +18,17 @@ class Home extends Component {
   componentDidMount() {
     axios.post('/rest/pageconfig/get', {session: window.sessionStorage.getItem("session")}).then((userPageConfig) => {
       console.log('aa', userPageConfig.data);
-      this.setState({groups: userPageConfig.data.Groups, ownerId: userPageConfig.data.OwnerId})
+
+      if (!userPageConfig.data.Groups) {
+        userPageConfig.data.Groups = [];
+      }
+
+      if (Object.prototype.toString.call( userPageConfig.data.Groups ) === '[object Object]') {
+        this.setState({groups: [userPageConfig.data.Groups], ownerId: userPageConfig.data.OwnerId})
+      } else {
+        this.setState({groups: userPageConfig.data.Groups, ownerId: userPageConfig.data.OwnerId})
+      }
+
     }).catch((err) => {
       console.error('err', err);
     })
@@ -56,6 +66,7 @@ class Home extends Component {
 
   createHandler = (name) => {
     let tempindex = 0;
+
     this.state.groups.map((entry) => {
       if (parseInt(entry.Index) > tempindex) {
         tempindex = parseInt(entry.Index);
