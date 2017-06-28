@@ -206,7 +206,7 @@ module.exports = {
               tempData.order = [];
             }
 
-            if (tempData.order.length) {
+            if (tempData.order && tempData.widgets && tempData.widgets.length && tempData.order.length) {
               let result = [];
               let items = JSON.parse(JSON.stringify(tempData.widgets));
               tempData.order.forEach(function (key) {
