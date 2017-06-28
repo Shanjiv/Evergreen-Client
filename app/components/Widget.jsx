@@ -39,9 +39,7 @@ class Widget extends Component {
 
   handleKeyPress = (event) => {
     if (event.key === 'Enter') {
-      if (this.props.config.machineId && this.props.config.varId) {
-        this.setWidgetHandle();
-      }
+      this.setWidgetHandle();
     }
   }
 
@@ -81,6 +79,12 @@ class Widget extends Component {
     }
   }
 
+  // keyPressHandler = (event) => {
+  //   if (event.key == 'Enter') {
+  //     this.setWidgetHandle()
+  //   }
+  // }
+
   render() {
     return (
         <div data-gridkey={this.props.id} className="grid-item">
@@ -88,7 +92,13 @@ class Widget extends Component {
             <div className="panel-heading clearfix">
               <div className="col-sm-6" style={{padding: 0}}>
                 {this.state.renameFlag
-                  ? <input ref={`renameInput`}  type="text" defaultValue={this.props.title} className="form-control" style={{margin: '5px'}}/>
+                  ? <input ref={`renameInput`}  type="text" defaultValue={this.props.title} onKeyPress={
+                              (event) => {
+                                if (event.key == 'Enter') {
+                                  this.renameHandler();
+                                }
+                              }
+                      } className="form-control" style={{margin: '5px'}}/>
                   : <h3 className="panel-title">{this.props.title}</h3>
                 }
               </div>
@@ -169,7 +179,7 @@ class Widget extends Component {
                     </div>
                     <div className="form-group">
                       <label>Bind value</label>
-                      <select className="form-control" ref="bindValue" value={this.props.config.varId} name="varId" onChange={this.handleConfigValueChange}>
+                      <select className="form-control" ref="bindValue" value={this.props.config.varId} name="varId" onChange={this.handleConfigValueChange} onKeyPress={this.handleKeyPress}>
                         <option value="">Choose</option>
                         {
                           (this.props.nodes && this.props.nodes.length) ? this.props.nodes.map((entry) => {
@@ -184,7 +194,7 @@ class Widget extends Component {
                     </div>
                     <div className="form-group">
                       <label>Update intervall in milliseconds
-                        <input className="form-control" type="number" value={this.props.config.tolleranceInterval} ref="tolleranceInterval" name="tolleranceInterval" onChange={this.handleConfigValueChange}/>
+                        <input className="form-control" type="number" value={this.props.config.tolleranceInterval} ref="tolleranceInterval" name="tolleranceInterval" onChange={this.handleConfigValueChange} onKeyPress={this.handleKeyPress}/>
                       </label>
                     </div>
                     <div className="form-group">

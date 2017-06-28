@@ -22,7 +22,9 @@ class newPage extends Component {
       widgetselect: 'graph',
       page: {},
       username: '',
-      order: []
+      order: [],
+      childsNeededToLoad: 0,
+      isEveryChildLoaded: false
     }
   }
 
@@ -36,34 +38,6 @@ class newPage extends Component {
     //   percentPosition: true
     // });
 
-    setTimeout(() => {
-
-      this.grid = $('.grid').packery({
-        itemSelector: '.grid-item',
-        columnWidth: '.grid-sizer',
-        gutter: '.gutter-sizer',
-        percentPosition: true
-      });
-
-      if (!isMobile) {
-        this.grid.find('.grid-item').each( ( i, gridItem ) => {
-          let draggie = new Draggabilly( gridItem );
-          // bind drag events to Packery
-          this.grid.packery( 'bindDraggabillyEvents', draggie );
-        });
-        let tArray = []
-
-        this.grid.on( 'dragItemPositioned', ( event, draggedItem ) => {
-          this.grid.packery('getItemElements').forEach((entry) => {
-            tArray.push(parseInt($(entry).attr("data-gridkey")));
-          })
-          this.setState({order: tArray}, () => {
-            this.pageUpdate(true);
-          });
-        })
-      }
-    }, 1000)
-
     this.setState({username: window.sessionStorage.getItem("username")})
 
     axios.post('/rest/page/get', {session: window.sessionStorage.getItem("session"), page: this.props.params.pageId}).then((page) => {
@@ -73,6 +47,33 @@ class newPage extends Component {
           page: {Id: page.data.Id, Title: page.data.Title, CreatorId: page.data.CreatorId},
           widgets: page.data.widgets
         }, () => {
+          setTimeout(() => {
+
+            this.grid = $('.grid').packery({
+              itemSelector: '.grid-item',
+              columnWidth: '.grid-sizer',
+              gutter: '.gutter-sizer',
+              percentPosition: true
+            });
+
+            if (!isMobile) {
+              this.grid.find('.grid-item').each( ( i, gridItem ) => {
+                let draggie = new Draggabilly( gridItem );
+                // bind drag events to Packery
+                this.grid.packery( 'bindDraggabillyEvents', draggie );
+              });
+              let tArray = []
+
+              this.grid.on( 'dragItemPositioned', ( event, draggedItem ) => {
+                this.grid.packery('getItemElements').forEach((entry) => {
+                  tArray.push(parseInt($(entry).attr("data-gridkey")));
+                })
+                this.setState({order: tArray}, () => {
+                  this.pageUpdate(true);
+                });
+              })
+            }
+          })
           this.initialSubscribe();
         })
       }
@@ -468,7 +469,13 @@ class newPage extends Component {
             </div>
             <div className="page-top-search">
               <div className="input-group">
-                <select name="widgetselect" className="form-control" onChange={this.handleInputChange}>
+                <select name="widgetselect" className="form-control" onKeyPress={
+                            (event) => {
+                              if (event.key == 'Enter') {
+                                this.addWidget();
+                              }
+                            }
+                    } onChange={this.handleInputChange}>
                   <option value="graph">Graph</option>
                   <option value="toggle">Toggle Button</option>
                   <option value="lamp">LED</option>
