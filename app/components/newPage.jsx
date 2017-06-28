@@ -68,7 +68,7 @@ class newPage extends Component {
               percentPosition: true
             });
 
-            if (!this.state.isMobile) {
+            if (this.state.isMobile) {
               this.grid.find('.grid-item').each( ( i, gridItem ) => {
                 let draggie = new Draggabilly( gridItem );
                 // bind drag events to Packery
