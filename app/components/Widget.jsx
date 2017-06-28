@@ -199,7 +199,7 @@ class Widget extends Component {
                     </div>
                     <div className="form-group">
                       <label className="checkbox-inline custom-checkbox nowrap">
-                        <input type="checkbox" id="inlineCheckbox01" checked={this.props.config.isSubscribe} ref="subscribe" name="isSubscribe" onChange={this.handleConfigCheckChange}/>
+                        <input type="checkbox" id="inlineCheckbox01" checked={this.props.config.isSubscribe} onKeyPress={this.handleKeyPress} ref="subscribe" name="isSubscribe" onChange={this.handleConfigCheckChange}/>
                         <span>Activate Subscribe (Dataupdate)</span>
                       </label>
                     </div>
