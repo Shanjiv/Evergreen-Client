@@ -1641,6 +1641,20 @@ div#_canvas_css_reference svg { position: absolute; width: 0; height: 0; top: -1
 	clear: both;
 }
 
+.flot-x-axis > .flot-tick-label.tickLabel {
+	margin-top: 10px;
+	transform: rotate(-45deg);
+  -ms-transform:rotate(-45deg); /* IE 9 */
+  -moz-transform:rotate(-45deg); /* Firefox */
+  -webkit-transform:rotate(-45deg); /* Safari and Chrome */
+  -o-transform:rotate(-45deg); /* Opera */
+  /*rotation-point:50% 50%;*/ /* CSS3 */
+  /*rotation:325deg;*/ /* CSS3 */
+	-webkit-font-smoothing: antialiased;
+	backface-visibility: hidden;
+	-webkit-filter: blur(0);
+}
+
 @media (min-width:320px)  { /* smartphones, iPhone, portrait 480x320 phones */ }
 @media (min-width:481px)  { /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */ }
 @media (max-width: 768px)  {
